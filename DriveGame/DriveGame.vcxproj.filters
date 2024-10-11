@@ -863,5 +863,8 @@
     <ClInclude Include="GS_Drive.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Obj.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

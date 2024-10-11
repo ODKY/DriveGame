@@ -3,7 +3,8 @@
 
 void Main() {
 	try {
-		set_font();
+		load_font();
+		load_image();
 		Window::Resize(SCREEN_W, SCREEN_H);
 		Scene::SetBackground(Color(0, 0, 0));
 

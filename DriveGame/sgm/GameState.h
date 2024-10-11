@@ -15,6 +15,11 @@ namespace SGM2 {
 	class GameStateManager;
 	class Object;
 
+	// 同じオブジェクトを2つの配列で保持するようになっている
+	// update用にpriorityでソートしたもの
+	// draw用にZ値でソートしたもの
+	// の2つである
+	// 容量を倍食ってしまうが、たぶん仕方ない
 	class GameState {
 
 		friend class GameStateManager;
@@ -30,6 +35,7 @@ namespace SGM2 {
 			isActive(true),
 			objectIsAdded(false),
 			objects(std::make_unique<vector<shared_ptr<Object>>>()),
+			objectsDraw(std::make_unique<vector<shared_ptr<Object>>>()),
 			effects(std::make_unique<Effect>()) {
 		}
 
@@ -38,6 +44,7 @@ namespace SGM2 {
 			isActive(r.isActive),
 			objectIsAdded(r.objectIsAdded),
 			objects(std::move(r.objects)),
+			objectsDraw(std::move(r.objectsDraw)),
 			effects(std::move(r.effects)) {
 			r.objects.reset();
 			r.effects.reset();
@@ -73,6 +80,14 @@ namespace SGM2 {
 		bool is_active() const { return isActive; }
 
 		int get_objects_num() const { return (int)objects->size(); }
+
+
+
+		//■//■//■//■//■// 設定 //■//■//■//■//■//
+
+		// trueを渡すと、Zソートが毎回実行される
+		// デフォルトではfalseで、Zソートはオブジェクト追加時にのみ行われる
+		void perform_z_sort_every_time(const bool flag) { flag_performZSoortEveryTime = flag; }
 
 
 
@@ -113,10 +128,20 @@ namespace SGM2 {
 
 
 
+		//■//■//■//■//■// その他 //■//■//■//■//■//
+
+		void z_sort();
+
+
+
 		int id;				// 1はじまりとする
 		bool isActive;
 		bool objectIsAdded;
-		unique_ptr<vector<shared_ptr<Object>>> objects;	// ムーブできるようにポインタ化しておく
+		bool flag_performZSoortEveryTime;
+		unique_ptr<vector<shared_ptr<Object>>> objects;		// ムーブできるようにポインタ化しておく
+		unique_ptr<vector<shared_ptr<Object>>> objectsDraw;	// 描画用にもう1つ用意しておく
+		// objects は priority でソート
+		// objectsDraw は z値 でソート
 
 	public:
 		unique_ptr<Effect> effects;

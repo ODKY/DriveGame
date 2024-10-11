@@ -3,12 +3,13 @@
 #include "std.h"
 #include "Component.hpp"
 #include "GameState.h"
+#include "Position.hpp"
 
 namespace SGM2 {
 
 	class GameState;
 
-	// priorityによるコンポーネントの並び変え
+	// 描画時にZソートする都合上、Postionコンポーネントのみデフォで追加済み
 	class Object {
 
 		// メンバ関数まで指定したかったが、ヘッダと実装を分けるのが面倒なのもあってクラス指定です
@@ -21,9 +22,7 @@ namespace SGM2 {
 
 		//■//■//■//■//■// 特殊関数 //■//■//■//■//■//
 		
-		// 派生先の作成を簡略化するため、引数はなしでも作れるようにした
-		// priorityの設定方法がややこしくなっているが
-		constexpr explicit Object(const int priority_ = 0) noexcept :
+		Object(const Vec3& pos_ = { 0, 0, 0 }, const int priority_ = 0) noexcept :
 			gameState(nullptr),
 			id(nextId),
 			//gameSstateId(INVALID_GAME_STATE_ID),
@@ -32,9 +31,13 @@ namespace SGM2 {
 			isSorted(false),
 			componentIsAdded(false),
 			tags(),
-			components() {
+			components(),
+			pos(add_component(new Position(*this, pos_))->pos) {
 			++nextId;
 		}
+
+		explicit Object(const int priority_ = 0, const Vec3& pos_ = { 0, 0, 0 }) noexcept :
+			Object(pos_, priority_) {}
 
 		virtual ~Object() = default;
 
@@ -111,6 +114,10 @@ namespace SGM2 {
 		bool is_sorted() const { return isSorted; }
 
 		const vector<string>& get_tags() const { return tags; }
+
+		const Vec3& get_pos() const { return pos; }
+
+		double get_z() const { return pos.z; }
 
 		template<typename T>
 		weak_ptr<T> get_component() {
@@ -197,5 +204,7 @@ namespace SGM2 {
 		bool componentIsAdded;
 		vector<string> tags;
 		vector<shared_ptr<Component>> components;
+	protected:
+		Vec3& pos;
 	};
 }

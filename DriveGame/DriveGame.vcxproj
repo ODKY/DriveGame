@@ -334,6 +334,7 @@
   <ItemGroup>
     <ClInclude Include="Global.h" />
     <ClInclude Include="GS_Drive.hpp" />
+    <ClInclude Include="Obj.hpp" />
     <ClInclude Include="sgm\CollisionManager.h" />
     <ClInclude Include="sgm\Component.hpp" />
     <ClInclude Include="sgm\GameState.h" />

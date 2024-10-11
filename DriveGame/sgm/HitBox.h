@@ -85,7 +85,7 @@ namespace SGM2::Plus {
 			return false;
 		}
 
-		const Vec2& get_object_posD() const { return objPos->pos; }
+		const Vec3& get_object_posD() const { return objPos->pos; }
 
 		const Point& get_object_posI() const { return Point((int)objPos->pos.x, (int)objPos->pos.y); }
 
