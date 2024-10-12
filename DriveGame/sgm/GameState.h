@@ -9,11 +9,12 @@
 
 #include "std.h"
 #include <Siv3D.hpp>
+#include "Object.h"
 
 namespace SGM2 {
 
 	class GameStateManager;
-	class Object;
+	//class Object;
 
 	// 同じオブジェクトを2つの配列で保持するようになっている
 	// update用にpriorityでソートしたもの
@@ -34,6 +35,7 @@ namespace SGM2 {
 			id(INVALID_ID),
 			isActive(true),
 			objectIsAdded(false),
+			flag_performZSoortEveryTime(false),
 			objects(std::make_unique<vector<shared_ptr<Object>>>()),
 			objectsDraw(std::make_unique<vector<shared_ptr<Object>>>()),
 			effects(std::make_unique<Effect>()) {
@@ -43,6 +45,7 @@ namespace SGM2 {
 			id(r.id),
 			isActive(r.isActive),
 			objectIsAdded(r.objectIsAdded),
+			flag_performZSoortEveryTime(false),
 			objects(std::move(r.objects)),
 			objectsDraw(std::move(r.objectsDraw)),
 			effects(std::move(r.effects)) {
@@ -56,9 +59,28 @@ namespace SGM2 {
 
 		//■//■//■//■//■// オブジェクト操作 //■//■//■//■//■//
 
-		void add_object(shared_ptr<Object> obj);
+		// 自身にidがセットされるのは遷移するとき
+		// よって、コンストラクタからの add_object では無効なIDをセットすることになってしまう
+		// 対策として、GameState へのIDセット時に、オブジェクトのIDも指定し直している
+		//
+		// ↑オブジェクトにGSのポインタを持たせたので、現在はIDを渡していません
+		template<typename T>
+		shared_ptr<T> add_object(shared_ptr<T> obj) {
+			if (obj != nullptr) {
+				//obj->set_game_state_id(id);
+				obj->gameState = this;
+				objects->push_back(obj);
+				objectsDraw->push_back(obj);
+				objectIsAdded = true;
+				return obj;
+			}
+			return nullptr;
+		}
 
-		void add_object(Object* obj);
+		template<typename T>
+		shared_ptr<T> add_object(T* obj) {
+			return add_object(shared_ptr<T>(obj));
+		}
 
 		weak_ptr<Object> get_object_by_id(const int id_) {
 			auto it = std::find_if(objects->begin(), objects->end(), [id_](const auto& v) {
@@ -87,7 +109,7 @@ namespace SGM2 {
 
 		// trueを渡すと、Zソートが毎回実行される
 		// デフォルトではfalseで、Zソートはオブジェクト追加時にのみ行われる
-		void perform_z_sort_every_time(const bool flag) { flag_performZSoortEveryTime = flag; }
+		void perform_z_sort_every_frame(const bool flag) { flag_performZSoortEveryTime = flag; }
 
 
 

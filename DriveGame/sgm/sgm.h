@@ -12,14 +12,19 @@
 
 #include "std.h"
 #include "Component.hpp"
-#include "Object.hpp"
+#include "Object.h"
+#include "Position.hpp"
 #include "GameState.h"
 #include "GameStateManager.h"
+
+#define SUPER_GAME_MAKER2
 
 // 変更箇所
 //
 // 
 // ● Ver 1.01 -> 1.02
+//
+// ドライブゲームと並行して作成
 // 
 // ・Positionを(x, y)から(x, y, z)に変更
 // 
@@ -27,13 +32,21 @@
 //		update用に優先度でソートするもの、draw用にZ値でソートするもの、の2つ
 //		同じものを2つずつ持つのは、無駄が多いしバグが怖い
 //		まあ、仕方ないってことで
+//		Zソートのタイミングは、priority同様オブジェクトを追加したときのみ
+//		設定を変えれば、毎フレームソートすることもできる
 // 
 // ・PositionをObjectに標準装備
 //		描画でZ値が必要になったため
 //
+// ・add_objectがshared_ptrを返すようにした
+//		元の戻り値はvoidだった
+//		add_componentはshared_ptrを返していたのに
+//
 // 
 //
 // ● Ver 1.00 -> 1.01
+//
+// カラーゲームの開発と並行して作成
 //
 // ・がっつり変えすぎて何したか覚えてない
 //		1.00と1.01は完全に別物

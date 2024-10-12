@@ -842,7 +842,7 @@
     <ClInclude Include="sgm\HitBox.h">
       <Filter>sgm</Filter>
     </ClInclude>
-    <ClInclude Include="sgm\Object.hpp">
+    <ClInclude Include="sgm\Object.h">
       <Filter>sgm</Filter>
     </ClInclude>
     <ClInclude Include="sgm\Position.hpp">
@@ -864,6 +864,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Obj.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Road.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

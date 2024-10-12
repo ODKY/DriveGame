@@ -1,6 +1,6 @@
 ﻿
 #include "GameState.h"
-#include "Object.hpp"
+//#include "Object.hpp"
 
 using namespace SGM2;
 
@@ -9,19 +9,19 @@ using namespace SGM2;
 // 対策として、GameState へのIDセット時に、オブジェクトのIDも指定し直している
 //
 // ↑オブジェクトにGSのポインタを持たせたので、現在はIDを渡していません
-void GameState::add_object(shared_ptr<Object> obj) {
-	if (obj != nullptr) {
-		//obj->set_game_state_id(id);
-		obj->gameState = this;
-		objects->push_back(obj);
-		objectsDraw->push_back(obj);
-		objectIsAdded = true;
-	}
-}
-
-void GameState::add_object(Object* obj) {
-	add_object(shared_ptr<Object>(obj));
-}
+//void GameState::add_object(shared_ptr<Object> obj) {
+//	if (obj != nullptr) {
+//		//obj->set_game_state_id(id);
+//		obj->gameState = this;
+//		objects->push_back(obj);
+//		objectsDraw->push_back(obj);
+//		objectIsAdded = true;
+//	}
+//}
+//
+//void GameState::add_object(Object* obj) {
+//	add_object(shared_ptr<Object>(obj));
+//}
 
 // Zソートはフラグが立っていれば毎回行われる
 // 前から描画するので降順

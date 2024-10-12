@@ -1,10 +1,13 @@
 ﻿#pragma once
 
 #include "std.h"
-#include "GameState.h"
-#include "Object.hpp"
+//#include "GameState.h"
+//#include "Object.h"
 
 namespace SGM2 {
+
+	class GameState;
+	class Object;
 
 	class GameStateManager {
 

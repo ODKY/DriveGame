@@ -1,4 +1,5 @@
 ﻿#include "GameStateManager.h"
+#include "GameState.h"
 
 namespace SGM2 {
 

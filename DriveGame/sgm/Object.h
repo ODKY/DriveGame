@@ -2,7 +2,7 @@
 
 #include "std.h"
 #include "Component.hpp"
-#include "GameState.h"
+//#include "GameState.h"
 #include "Position.hpp"
 
 namespace SGM2 {
@@ -36,7 +36,7 @@ namespace SGM2 {
 			++nextId;
 		}
 
-		explicit Object(const int priority_ = 0, const Vec3& pos_ = { 0, 0, 0 }) noexcept :
+		explicit Object(const int priority_, const Vec3& pos_ = { 0, 0, 0 }) noexcept :
 			Object(pos_, priority_) {}
 
 		virtual ~Object() = default;
@@ -101,7 +101,7 @@ namespace SGM2 {
 
 		int get_id() const { return id; }
 
-		int get_game_state_id() const { return gameState->get_id(); }
+		int get_game_state_id() const;
 
 		string get_type_name() const { return std::string(typeid(*this).name()); }
 

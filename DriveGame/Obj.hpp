@@ -1,28 +1,29 @@
 ﻿#pragma once
 
 #include "Global.h"
+#include "Camera.hpp"
 
 class Obj : public Object {
 
 public:
-	Obj(const Vec3& pos_, const Texture& img_) :
+	Obj(const Vec3& pos_, const Texture& img_, const Camera& camera_) :
 		Object(pos_),
-		img(img_) {}
+		img(img_),
+		camera(camera_) {}
 
 private:
 	const Texture& img;
+	const Camera& camera;
 
 	bool update() override {
 		return true;
 	}
 
 	void draw() const override {
-		auto posFromCamera = world_pos_to_camera_pos(pos);
-		if (posFromCamera.z > 2.0) {
-			Point posDrawing = camera_pos_to_screen_pos(posFromCamera);
-			img.scaled(calc_scale(posFromCamera)).drawAt(posDrawing);
-		}
-		Print << U"OBJECT: " << posFromCamera;
+		camera.draw_object(pos.movedBy(0.0, -img.height() / 2.0, 0.0), img);
+
+		//if (camera.in_viewport(camera.world_pos_to_camera_pos(pos)))
+		//	Circle(camera.world_pos_to_screen_pos(pos), 3).draw(Palette::Cyan);
 	}
 
 	Vec2 pos2() const { return Vec2(pos.x, pos.y); }

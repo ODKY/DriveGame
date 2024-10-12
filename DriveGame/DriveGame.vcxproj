@@ -332,15 +332,17 @@
     <Xml Include="App\example\xml\test.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.hpp" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="GS_Drive.hpp" />
     <ClInclude Include="Obj.hpp" />
+    <ClInclude Include="Road.hpp" />
     <ClInclude Include="sgm\CollisionManager.h" />
     <ClInclude Include="sgm\Component.hpp" />
     <ClInclude Include="sgm\GameState.h" />
     <ClInclude Include="sgm\GameStateManager.h" />
     <ClInclude Include="sgm\HitBox.h" />
-    <ClInclude Include="sgm\Object.hpp" />
+    <ClInclude Include="sgm\Object.h" />
     <ClInclude Include="sgm\Position.hpp" />
     <ClInclude Include="sgm\sgm.h" />
     <ClInclude Include="sgm\sgmPlus.h" />
