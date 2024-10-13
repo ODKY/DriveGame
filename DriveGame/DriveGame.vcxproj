@@ -117,7 +117,9 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Global.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Road.cpp" />
     <ClCompile Include="sgm\CollisionManager.cpp" />
     <ClCompile Include="sgm\GameState.cpp" />
     <ClCompile Include="sgm\GameStateManager.cpp" />
@@ -337,7 +339,7 @@
     <ClInclude Include="Global.h" />
     <ClInclude Include="GS_Drive.hpp" />
     <ClInclude Include="Obj.hpp" />
-    <ClInclude Include="Road.hpp" />
+    <ClInclude Include="Road.h" />
     <ClInclude Include="sgm\CollisionManager.h" />
     <ClInclude Include="sgm\Component.hpp" />
     <ClInclude Include="sgm\GameState.h" />
@@ -434,6 +436,16 @@
     <None Include="App\example\shader\hlsl\terrain_normal.hlsl">
       <FileType>Document</FileType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="App\shader\road.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ps_main</EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ps_main</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

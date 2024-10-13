@@ -7,30 +7,53 @@
 using namespace SGM2;
 using namespace SGM2::Plus;
 
+// サイズ
 constexpr int32 SCREEN_W = 640;
 constexpr int32 SCREEN_H = 480;
 constexpr Point SCREEN_CENTER = { SCREEN_W / 2, SCREEN_H / 2 };
 
+constexpr int32 RENDER_TEXTURE_W = SCREEN_W * 1.5;
+constexpr int32 RENDER_TEXTURE_W_HALF = RENDER_TEXTURE_W / 2;
+constexpr int32 RENDER_TEXTURE_W_QUARTER = RENDER_TEXTURE_W_HALF / 2;
+
+// カーブ時の歪み計算で使う値
+// シェーダー側と揃えるように
+constexpr double DIM = 4.0;
+
 // 乱数生成器
-std::random_device seedGenerator;
-std::mt19937 random(seedGenerator());
+extern std::random_device seedGenerator;
+extern std::mt19937 random;
 
 // フォント
-unique_ptr<Font> fontA;
-unique_ptr<Font> fontDeb;
+extern unique_ptr<Font> fontA;
+extern unique_ptr<Font> fontDeb;
 
 // ゲームステートマネージャー
-unique_ptr<GameStateManager> gsm;
+extern unique_ptr<GameStateManager> gsm;
 
 // 画像
-unique_ptr<Texture> imgMountIwate;
-unique_ptr<Texture> imgBallonR;
-unique_ptr<Texture> imgTree01;
-unique_ptr<Texture> imgTree02;
-unique_ptr<Texture> imgGrass01;
+extern unique_ptr<Texture> imgMountIwate;
+extern unique_ptr<Texture> imgBallonR;
+extern unique_ptr<Texture> imgTree01;
+extern unique_ptr<Texture> imgTree02;
+extern unique_ptr<Texture> imgGrass01;
 
-// カメラ位置
-//Vec3 cameraPos = DEFAULT_CAMERA_POS_IN_WORLD;
+// シェーダー
+extern unique_ptr<VertexShader> vertexShader;
+extern unique_ptr<PixelShader> pixelShader;
+
+// コンスタントバッファー
+struct TimeStruct {
+	float time;
+};
+extern ConstantBuffer<TimeStruct> cbTime;
+
+struct RoadData {
+	float start;
+	float end;
+	float curve;
+};
+extern ConstantBuffer<RoadData> cbRoad;
 
 inline void load_font() {
 	//fontA = std::make_unique<Font>(FontMethod::Bitmap, 12, FileSystem::GetFolderPath(SpecialFolder::SystemFonts) + U"msgothic.ttc", FontStyle::Bitmap);
@@ -46,22 +69,19 @@ inline void load_image() {
 	imgGrass01.reset(new Texture(U"./img/grass01.png"));
 }
 
-//// 座標変換
-//// ワールド座標系 -> カメラ座標系
-//inline Vec3 world_pos_to_camera_pos(const Vec3& posInWorld) {
-//	return posInWorld - cameraPos;
-//}
-//
-//// 座標変換
-//// カメラ座標系 -> デバイス座標系
-//inline Point camera_pos_to_screen_pos(const Vec3& cameraToObject) {
-//	return Point {
-//		(int32)(cameraToObject.x / cameraToObject.z) + SCREEN_CENTER.x,
-//		(int32)(cameraToObject.y / cameraToObject.z) + SCREEN_CENTER.y,
-//	};
-//}
-//
-//// 拡大率取得
-//inline double calc_scale(const Vec3& cameraToObject) {
-//	return 3.0 / cameraToObject.z;
-//}
+inline bool load_shader() {
+	vertexShader.reset(new VertexShader(HLSL{ U"./shader/road.hlsl", U"vs_main" }));
+	pixelShader.reset(new PixelShader(HLSL{ U"./shader/road.hlsl", U"ps_main" }));
+
+	if (*vertexShader && *pixelShader)
+		return true;
+	return false;
+}
+
+inline void init() {
+	cbTime->time = 0.0f;
+	cbRoad->start = 1.0f;
+	cbRoad->end= 1.0f;
+	cbRoad->curve = 5.0f;
+}
+

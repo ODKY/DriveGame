@@ -5,6 +5,10 @@ void Main() {
 	try {
 		load_font();
 		load_image();
+		if (!load_shader())
+			throw std::runtime_error("シェーダーのロードに失敗したっ！");
+		init();
+
 		Window::Resize(SCREEN_W, SCREEN_H);
 		Scene::SetBackground(Color(0, 0, 0));
 
