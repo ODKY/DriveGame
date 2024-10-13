@@ -8,6 +8,9 @@ void Main() {
 		Window::Resize(SCREEN_W, SCREEN_H);
 		Scene::SetBackground(Color(0, 0, 0));
 
+		// アンチエイリアスをオフ
+		const ScopedRenderStates2D sampler{ SamplerState::ClampNearest };
+
 		gsm.reset(GameStateManager::create_instance(new GS_Drive()));
 		Stopwatch stopwatch;
 

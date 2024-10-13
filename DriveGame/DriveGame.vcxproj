@@ -333,6 +333,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.hpp" />
+    <ClInclude Include="DistantView.hpp" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="GS_Drive.hpp" />
     <ClInclude Include="Obj.hpp" />

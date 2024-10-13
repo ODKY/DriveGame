@@ -9,7 +9,7 @@ using namespace SGM2::Plus;
 
 constexpr int32 SCREEN_W = 640;
 constexpr int32 SCREEN_H = 480;
-//constexpr Point SCREEN_CENTER = { SCREEN_W / 2, SCREEN_H / 2 };
+constexpr Point SCREEN_CENTER = { SCREEN_W / 2, SCREEN_H / 2 };
 
 // 乱数生成器
 std::random_device seedGenerator;
@@ -23,8 +23,11 @@ unique_ptr<Font> fontDeb;
 unique_ptr<GameStateManager> gsm;
 
 // 画像
+unique_ptr<Texture> imgMountIwate;
 unique_ptr<Texture> imgBallonR;
 unique_ptr<Texture> imgTree01;
+unique_ptr<Texture> imgTree02;
+unique_ptr<Texture> imgGrass01;
 
 // カメラ位置
 //Vec3 cameraPos = DEFAULT_CAMERA_POS_IN_WORLD;
@@ -36,8 +39,11 @@ inline void load_font() {
 }
 
 inline void load_image() {
+	imgMountIwate.reset(new Texture(U"./img/mount_iwate.png"));
 	imgBallonR.reset(new Texture(U"./img/ballon01.png"));
 	imgTree01.reset(new Texture(U"./img/tree01.png"));
+	imgTree02.reset(new Texture(U"./img/tree02.png"));
+	imgGrass01.reset(new Texture(U"./img/grass01.png"));
 }
 
 //// 座標変換

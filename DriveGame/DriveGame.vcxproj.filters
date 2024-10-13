@@ -872,5 +872,8 @@
     <ClInclude Include="Road.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DistantView.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
