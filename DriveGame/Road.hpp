@@ -130,7 +130,7 @@ private:
 			const double rate = 10000.0;
 			int32 tmp = (int32)(CENTER_LINE_LENGTH * 2 * rate);
 			if (tmp == 0)
-				tmp = 0.0001;
+				tmp = 1;
 			const double remainder = (int32)(camera.get_z() * rate) % tmp / rate;
 			const double start = CENTER_LINE_LENGTH * 2 - remainder + camera.get_z() - CENTER_LINE_LENGTH;
 			const double z = start + CENTER_LINE_LENGTH * i * 2;
@@ -156,7 +156,7 @@ private:
 			const double rate = 10000.0;
 			int32 tmp = (int32)(SIDE_LINE_IN_LENGTH * 2 * rate);
 			if (tmp == 0)
-				tmp = 0.0001;
+				tmp = 1;
 			const double remainder = (int32)(camera.get_z() * rate) % tmp / rate;
 			const double start = SIDE_LINE_IN_LENGTH * 2 - remainder + camera.get_z() - SIDE_LINE_IN_LENGTH;
 			const double z = start + SIDE_LINE_IN_LENGTH * i * 2;
