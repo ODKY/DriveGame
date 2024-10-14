@@ -18,7 +18,7 @@ constexpr int32 RENDER_TEXTURE_W_QUARTER = RENDER_TEXTURE_W_HALF / 2;
 
 // カーブ時の歪み計算で使う値
 // シェーダー側と揃えるように
-constexpr double DIM = 4.0;
+constexpr double DIM = 12.0;//4.0
 
 // 乱数生成器
 extern std::random_device seedGenerator;

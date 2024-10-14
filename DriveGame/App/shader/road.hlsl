@@ -39,9 +39,9 @@ cbuffer TimeStruct : register(b1) {
 }
 
 cbuffer RoadData : register(b2) {
-    float start_;
-    float end_;
-    float curve_;
+	float start_;
+	float end_;
+	float curve_;
 }
 
 //cbuffer DistortionSize : register(b2) {
@@ -83,14 +83,16 @@ float4 ps_main_shape(s3d::PSInput input) : SV_TARGET {
 
 // 注意: 日本語のコメントは最後にセミコロンが無いとエラー吐くっぽい;
 
-static float d = 4;
+static float d = 12.0f;
+static float d2 = d - 6.0f;
 
+// powの第2引数を7以上にしたらエラー出たので、2つpowを使っている;
 float f(const float y, const float curve) {
-	return pow(y, d) * curve;
+    return pow(y, 6.0f) * pow(y, d2) * curve;
 }
 
 float f_dash(const float y, const float curve) {
-	return d * pow(y, d - 1) * curve;
+    return d * pow(y, 6.0f - 1) * pow(y, d2) * curve;
 }
 
 
@@ -112,11 +114,11 @@ float4 ps_main(s3d::PSInput input) : SV_TARGET {
 
 	//start = 1.0 - fmod(time / 2, 4);
 	//end = start + 2;
-    float start = start_;	// これを超えるとカーブがはじまる;
-    float end = end_;		// カーブはここまで;
-    float curve = -curve_;	// でかいほど急カーブ;
-    if (start > 1)
-        start = 1;
+	float start = start_;	// これを超えるとカーブがはじまる;
+	float end = end_;		// カーブはここまで;
+	float curve = -curve_;	// でかいほど急カーブ;
+	if (start > 1)
+		start = 1;
 	if (start < 0)
 		start = 0;
 	if (end > 1)

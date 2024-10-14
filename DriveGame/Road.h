@@ -61,21 +61,21 @@ private:
 	int index;
 
 	bool update() override {
-		if (camera.get_z() > 0.0) {
-			const Vec3 cameraToStart = camera.world_pos_to_camera_pos({ 0.0, 0.0, curveData[index][0] });
-			cbRoad->start = (float)(cameraToStart.z / Camera::FAR_PLANE);
 
-			const Vec3 cameraToEnd = camera.world_pos_to_camera_pos({ 0.0, 0.0, curveData[index][1] });
-			cbRoad->end = (float)(cameraToEnd.z / Camera::FAR_PLANE);
+		// シェーダーにカーブ位置と曲がり具合を送信する
+		const Vec3 cameraToStart = camera.world_pos_to_camera_pos({ 0.0, 0.0, curveData[index][0] });
+		cbRoad->start = (float)(cameraToStart.z / Camera::FAR_PLANE);
 
-			cbRoad->curve = curveData.at(index)[2];
+		const Vec3 cameraToEnd = camera.world_pos_to_camera_pos({ 0.0, 0.0, curveData[index][1] });
+		cbRoad->end = (float)(cameraToEnd.z / Camera::FAR_PLANE);
 
-			if (
-				camera.get_z() > curveData.at(index)[1]
-				&& index < (int)curveData.size() - 1
-				) {
-				++index;
-			}
+		cbRoad->curve = curveData.at(index)[2];
+
+		if (
+			camera.get_z() > curveData.at(index)[1]
+			&& index < (int)curveData.size() - 1
+			) {
+			++index;
 		}
 		return true;
 	}
@@ -83,8 +83,19 @@ private:
 	void draw() const override;
 
 	void set_curve_pos() {
-		curveData.push_back({ 50.0, 80.0, 5.0 });
-		curveData.push_back({ 130.0, 230.0, -2.0 });
+		curveData = {
+			{ 50.0, 80.0, 1500.0 },
+			{ 130.0, 230.0, -0},
+			//{ 130.0, 230.0, -1526.0 }
+		};
+
+		//curveData = {
+		//	{ 0.0, 0.0 },
+		//	{ 50, 1500.0 },
+		//	{ 80, 0.0 },
+		//	{ 130, -1500 },
+		//	{ 230, 0.0 },
+		//};
 	}
 
 	Vec2 pos2() const { return Vec2(pos.x, pos.y); }
