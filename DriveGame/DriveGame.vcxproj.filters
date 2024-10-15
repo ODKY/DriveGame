@@ -889,5 +889,8 @@
     <FxCompile Include="App\shader\road.hlsl">
       <Filter>shader</Filter>
     </FxCompile>
+    <FxCompile Include="aaa.hlsl">
+      <Filter>shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

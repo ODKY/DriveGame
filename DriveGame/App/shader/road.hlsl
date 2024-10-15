@@ -24,7 +24,7 @@ namespace s3d {
 cbuffer VSConstants2D : register(b0) {
 	row_major float2x4 g_transform;
 	float4 g_colorMul;
-}
+};
 
 cbuffer PSConstants2D : register(b0) {
 	float4 g_colorAdd;
@@ -32,21 +32,21 @@ cbuffer PSConstants2D : register(b0) {
 	float4 g_sdfOutlineColor;
 	float4 g_sdfShadowColor;
 	float4 g_internal;
-}
+};
 
 cbuffer TimeStruct : register(b1) {
 	float time;
-}
+};
 
 cbuffer RoadData : register(b2) {
-	float start_;
-	float end_;
-	float curve_;
-}
+	float start0;
+	float start1;
+	float curve0;
+	float curve1;
+};
 
-//cbuffer DistortionSize : register(b2) {
-//    float dim;
-//}
+static float CAMERA_H = 145.0f;
+static float SCREEN_H = 480.0f;
 
 //■//■//■//■//■// 関数 //■//■//■//■//■//
 
@@ -70,84 +70,73 @@ float4 ps_main_shape(s3d::PSInput input) : SV_TARGET {
 	return input.color;
 }
 
-//// PixelMain_Texture
-//float4 ps_main_texture(s3d::PSInput input) : SV_TARGET{
-//	const float4 texColor = g_texture0.Sample(g_sampler0, input.uv);
-//	const float4 grayColor = gray(texColor);
-//
-//	float rate = time / 3;
-//	if (rate > 1.0)
-//		rate = 1.0;
-//	return lerp(texColor, grayColor, rate);
-//}
-
 // 注意: 日本語のコメントは最後にセミコロンが無いとエラー吐くっぽい;
-
-static float d = 12.0f;
-static float d2 = d - 6.0f;
-
-// powの第2引数を7以上にしたらエラー出たので、2つpowを使っている;
-float f(const float y, const float curve) {
-    return pow(y, 6.0f) * pow(y, d2) * curve;
-}
-
-float f_dash(const float y, const float curve) {
-    return d * pow(y, 6.0f - 1) * pow(y, d2) * curve;
-}
-
 
 // PixelMain_Texture
 float4 ps_main(s3d::PSInput input) : SV_TARGET {
 	float2 uv = input.uv;
 
-	//// これを超えるとカーブがはじまる;
-	//float start = 0.0;
-
-	//// カーブはここまで;
-	//float end = 0.7;
-
-	//// カーブの割合的な;
-	//// でかいほど急カーブ;
-	//float curve = -6.0;
-
-	////curve = fmod(time/3, 4) - 2;
-
-	//start = 1.0 - fmod(time / 2, 4);
-	//end = start + 2;
-	float start = start_;	// これを超えるとカーブがはじまる;
-	float end = end_;		// カーブはここまで;
-	float curve = -curve_;	// でかいほど急カーブ;
-	if (start > 1)
-		start = 1;
-	if (start < 0)
-		start = 0;
-	if (end > 1)
-		end = 1;
-	if (end < 0)
-		end = 0;
+	float start[2] = { start0, start1 };
+	float curve[2] = { -curve0, -curve1 };
+	
+	for (int i = 0; i < 2; ++i) {
+		if (start[i] < 0)
+			start[i] = 0;
+		curve[i] /= 1000;
+	}
 	
 	// y軸反転（下から上へ伸ばす）;
 	float y = uv.y * -1.0 + 1.0;
-
+	
+	// 地面エリア内に正規化したやつ;
+	float yG = y * 2.0f;
+	
+	// z値を求める;
+	// Yc / Zc = Ys より、Zc = Yc / Ys;
+	// Ycはカメラの高さに等しい（カメラから見た地面）;
+	// Ysは地平線を0として、下に軸を伸ばしたときのスクリーン座標である;
+	float z = (CAMERA_H / ((uv.y - 0.5) * SCREEN_H));
+	
+	// カーブとの境界線のY座標;
+	// 中央を0、下端を SCREEN_H / 2 としたときのピクセル数;
+	const float borderY_GI_toD = CAMERA_H / start[1];
+	
+	// 上記を正規化したもの;
+	const float borderY_GF_toD = borderY_GI_toD / (SCREEN_H / 2);
+	
+	// 上記の軸を、下から上へ伸びるようにしたバージョン;
+	const float borderY_GF_toU = borderY_GF_toD * -1 + 1.0f;
+	
+	float borderZ = start[1];
+	
+	float aaa = 0;
+	
 	// ラスタスクロール;
-	if (y > start)
-		if (y < end) {
-			uv.x += f(y - start, curve);
-		}
-		else {
-			// カーブ終了地点における Xのズレ;
-			float endX = f(end - start, curve);
+	// 条件式の右辺にはコンパイル時定数しか置けないみたい;
+	if (z - start[0] > 0 && z - start[1] < 0) {
+		uv.x += curve[0] * z;
+	}
+	else if (z - start[1] > 0) {		
+		float horizon = 1.0f;
+		float rate = (yG - borderY_GF_toU) / (horizon - borderY_GF_toU);
+		rate = pow(rate, 2);
+		if (rate < 0)
+			rate = 0;
+		if (rate > 1)
+			rate = 1;
+		if (borderZ < 0.00001f)
+			rate = 1;
 
-			// そこでの傾き;
-			float slope = f_dash(end - start, curve);
+		uv.x += (curve[1] * z * rate) + (curve[0] * z * (1.0f - rate));	
+	}
 
-			// あとは一次関数の式で出す;
-			uv.x += endX + (y - end) * slope;
-		}
-
-	const float4 texColor = g_texture0.Sample(g_sampler0, uv);
+	float4 texColor = g_texture0.Sample(g_sampler0, uv);
+	
 	if (length(texColor.rgb - float3(0.0, 0.0, 0.0)) < 0.01)
 		discard;
+	
+	if (aaa > 20)
+		texColor.rgb = float3(0.0, 1.0, 0.0);
 	
 	return texColor;
 }

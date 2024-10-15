@@ -22,7 +22,7 @@ private:
 	}
 
 	void draw() const override {
-		camera.draw_object(pos.movedBy(0.0, -img.height() * scale / 2.0, 0.0), img, scale);
+		camera.draw_object(pos.movedBy(0.0, -img.height() * scale / 2.0 + ALL_OFFSET_Y, 0.0), img, scale);
 
 		//if (camera.in_viewport(camera.world_pos_to_camera_pos(pos)))
 		//	Circle(camera.world_pos_to_screen_pos(pos), 3).draw(Palette::Cyan);

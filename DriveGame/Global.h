@@ -20,6 +20,9 @@ constexpr int32 RENDER_TEXTURE_W_QUARTER = RENDER_TEXTURE_W_HALF / 2;
 // シェーダー側と揃えるように
 constexpr double DIM = 12.0;//4.0
 
+// 遠くを隠すために、道路以外を少し下に下げる
+constexpr int32 ALL_OFFSET_Y = 3;
+
 // 乱数生成器
 extern std::random_device seedGenerator;
 extern std::mt19937 random;
@@ -45,13 +48,15 @@ extern unique_ptr<PixelShader> pixelShader;
 // コンスタントバッファー
 struct TimeStruct {
 	float time;
+	//float padding[3];
 };
 extern ConstantBuffer<TimeStruct> cbTime;
 
 struct RoadData {
-	float start;
-	float end;
-	float curve;
+	float start0;
+	float start1;
+	float curve0;
+	float curve1;
 };
 extern ConstantBuffer<RoadData> cbRoad;
 
@@ -80,8 +85,8 @@ inline bool load_shader() {
 
 inline void init() {
 	cbTime->time = 0.0f;
-	cbRoad->start = 1.0f;
-	cbRoad->end= 1.0f;
-	cbRoad->curve = 5.0f;
+	//cbRoad->start = 1.0f;
+	//cbRoad->end= 1.0f;
+	//cbRoad->curve = 5.0f;
 }
 

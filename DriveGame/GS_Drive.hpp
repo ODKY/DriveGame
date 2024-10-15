@@ -12,7 +12,7 @@ class GS_Drive : public GameState {
 
 public:
 	GS_Drive() :
-		camera({ 0.0, -85.0, 0.0 }, { SCREEN_W, SCREEN_H }),
+		camera({ 0.0, -145.0, 0.0 }, { SCREEN_W, SCREEN_H }),
 		road(*add_object(new Road(camera))) {
 		perform_z_sort_every_frame(true);
 

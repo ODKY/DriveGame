@@ -7,7 +7,7 @@ class DistantView : public Object {
 
 public:
 	DistantView(const Texture& img_, const Camera& camera_) :
-		Object({ 0.0, 0.0, INT_MAX }),
+		Object({ 0.0, 0.0, INT_MAX -1 }),
 		img(img_),
 		camera(camera_) {}
 
@@ -20,7 +20,7 @@ private:
 	}
 
 	void draw() const override {
-		img.scaled((SCREEN_H / 2.0) / img.height()).draw(-230, 0);
+		img.scaled((SCREEN_H / 2.0) / img.height()).draw(-230, ALL_OFFSET_Y);
 	}
 
 	Vec2 pos2() const { return Vec2(pos.x, pos.y); }
