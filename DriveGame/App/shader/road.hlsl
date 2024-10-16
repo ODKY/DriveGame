@@ -41,8 +41,10 @@ cbuffer TimeStruct : register(b1) {
 cbuffer RoadData : register(b2) {
 	float start0;
 	float start1;
+	float start2;
 	float curve0;
 	float curve1;
+	float curve2;
 };
 
 cbuffer CameraData : register(b3) {
@@ -80,10 +82,10 @@ float4 ps_main_shape(s3d::PSInput input) : SV_TARGET {
 float4 ps_main(s3d::PSInput input) : SV_TARGET {
 	float2 uv = input.uv;
 
-	float start[2] = { start0, start1 };
-	float curve[2] = { -curve0, -curve1 };
+	float start[3] = { start0, start1, start2 };
+	float curve[3] = { -curve0, -curve1, -curve2 };
 	
-	for (int i = 0; i < 2; ++i) {
+	for (int i = 0; i < 3; ++i) {
 		if (start[i] < 0)
 			start[i] = 0;
 		//curve[i] /= 1000;
@@ -104,14 +106,18 @@ float4 ps_main(s3d::PSInput input) : SV_TARGET {
 	// カーブとの境界線のY座標;
 	// 中央を0、下端を SCREEN_H / 2 としたときのピクセル数;
 	const float borderY_GI_toD = cameraH / start[1];
+	const float border2Y_GI_toD = cameraH / start[2];
 	
 	// 上記を正規化したもの;
 	const float borderY_GF_toD = borderY_GI_toD / (SCREEN_H / 2);
+	const float border2Y_GF_toD = border2Y_GI_toD / (SCREEN_H / 2);
 	
 	// 上記の軸を、下から上へ伸びるようにしたバージョン;
 	const float borderY_GF_toU = borderY_GF_toD * -1 + 1.0f;
+	const float border2Y_GF_toU = border2Y_GF_toD * -1 + 1.0f;
 	
 	float borderZ = start[1];
+	float border2Z = start[2];
 	
 	float aaa = 0;
 	
@@ -120,9 +126,8 @@ float4 ps_main(s3d::PSInput input) : SV_TARGET {
 	if (z - start[0] > 0 && z - start[1] < 0) {
 		uv.x += curve[0] * z;
 	}
-	else if (z - start[1] > 0) {		
-		float horizon = 1.0f;
-		float rate = (yG - borderY_GF_toU) / (horizon - borderY_GF_toU);
+	else if (z - start[1] > 0 && z - start[2] < 0) {		
+		float rate = (yG - borderY_GF_toU) / (1.0f - borderY_GF_toU);
 		rate = pow(rate, 2);
 		if (rate < 0)
 			rate = 0;
@@ -133,6 +138,25 @@ float4 ps_main(s3d::PSInput input) : SV_TARGET {
 
 		uv.x += (curve[1] * z * rate) + (curve[0] * z * (1.0f - rate));	
 	}
+	else if (z - start[2] > 0) {
+		float rate1 = (yG - borderY_GF_toU) / (1.0f - borderY_GF_toU);
+		rate1 = pow(rate1, 2);
+		float rate2 = (yG - border2Y_GF_toU) / (1.0f - border2Y_GF_toU);
+		rate2 = pow(rate2, 2);
+		
+		if (border2Z < 0.00001f) {
+			rate1 = 0;
+			rate2 = 1;
+		}
+
+		float deltaX1 = (curve[1] * z * rate1) + (curve[0] * z * (1.0f - rate1));
+		uv.x += (curve[2] * z * rate2) + (deltaX1 * (1.0f - rate2));
+	}
+	
+	if (z > start[1] - 0.03f && z < start[1] + 0.03f)
+		aaa = 100;
+	if (z > start[2] - 0.08f && z < start[2] + 0.08f)
+		aaa = 200;
 
 	float4 texColor = g_texture0.Sample(g_sampler0, uv);
 	
@@ -141,6 +165,8 @@ float4 ps_main(s3d::PSInput input) : SV_TARGET {
 	
 	if (aaa > 20)
 		texColor.rgb = float3(0.0, 1.0, 0.0);
+	if (aaa > 120)
+		texColor.rgb = float3(1.0, 0.0, 0.0);
 	
 	return texColor;
 }

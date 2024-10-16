@@ -37,13 +37,13 @@ private:
 	Road& road;
 
 	void update() override {
-		double speed = 300.0;
+		double speed = 400.0;
 		if (KeyUp.pressed())
-			camera.add_y(-speed * Scene::DeltaTime());
+			camera.add_y(-speed *3* Scene::DeltaTime());
 		if (KeyRight.pressed())
 			camera.add_x(speed * Scene::DeltaTime());
 		if (KeyDown.pressed())
-			camera.add_y(speed * Scene::DeltaTime());
+			camera.add_y(speed *3* Scene::DeltaTime());
 		if (KeyLeft.pressed())
 			camera.add_x(-speed * Scene::DeltaTime());
 

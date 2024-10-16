@@ -74,8 +74,10 @@ private:
 
 		cbRoad->start0 = (float)camera.world_pos_to_camera_pos({ 0.0, 0.0, curveData[index][IDX_START] }).z;
 		cbRoad->start1 = (float)camera.world_pos_to_camera_pos({ 0.0, 0.0, curveData[index + 1][IDX_START] }).z;
+		cbRoad->start2 = (float)camera.world_pos_to_camera_pos({ 0.0, 0.0, curveData[index + 2][IDX_START] }).z;
 		cbRoad->curve0 = curveData.at(index)[IDX_CURVE];
 		cbRoad->curve1 = curveData.at(index + 1)[IDX_CURVE];
+		cbRoad->curve2 = curveData.at(index + 2)[IDX_CURVE];
 
 		//cbRoad->start0 = camera.world_pos_to_screen_pos({ 0.0, POS_Y, curveData[index][IDX_START] }).y;
 		//if (cbRoad->start0 > 0 && cbRoad->start0 < SCREEN_H) {
@@ -99,6 +101,7 @@ private:
 
 		Print << U"START0: " << cbRoad->start0;
 		Print << U"START1: " << cbRoad->start1;
+		Print << U"START2: " << cbRoad->start2;
 
 		Print << U"START1_S: " << camera.world_pos_to_screen_pos({ 0.0, 0.0, curveData[index + 1][IDX_START]}).y;
 		Print << U"START1_S - 240: " << camera.world_pos_to_screen_pos({ 0.0, 0.0, curveData[index + 1][IDX_START] }).y - 240;
@@ -127,7 +130,7 @@ private:
 
 		if (
 			camera.get_z() > curveData.at(index + 1)[IDX_START]
-			&& index < (int)curveData.size() - 2
+			&& index < (int)curveData.size() - 3
 			) {
 			++index;
 		}
@@ -146,10 +149,21 @@ private:
 		// 前の前からの差は50以内で
 		// 50以内だと変化が近くで起こるから見えちゃう
 		curveData = {
-			{ 0.0, -13 },
+			{ 0.0, -18 },
 			{ 25.0, 0 },
 			{ 50.0, 14 },
 			{ 80.0, -7 },
+			{ 90.0, 16 },
+			{ 130.0, 0 },
+			{ 155.0, -18 },
+			{ 180.0, 18 },
+			{ 205.0, -18 },
+			{ 230.0, 0 },
+			{ 275.0, 20 },
+			{ 280.0, -20 },
+			{ 325.0, 0 },
+			{ INT_MAX - 1, 0 },
+			{ INT_MAX, 0 },
 		};
 		for (auto& data : curveData)
 			data[1] /= 1000;

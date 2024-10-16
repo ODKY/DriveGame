@@ -55,8 +55,10 @@ extern ConstantBuffer<TimeStruct> cbTime;
 struct RoadData {
 	float start0;
 	float start1;
+	float start2;
 	float curve0;
 	float curve1;
+	float curve2;
 };
 
 struct CameraData {
