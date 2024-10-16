@@ -100,8 +100,8 @@ private:
 		Print << U"START0: " << cbRoad->start0;
 		Print << U"START1: " << cbRoad->start1;
 
-		Print << U"START1_: " << camera.world_pos_to_screen_pos({ 0.0, 0.0, curveData[index + 1][IDX_START] }).y;
-		Print << U"START1_ - 240: " << camera.world_pos_to_screen_pos({ 0.0, 0.0, curveData[index + 1][IDX_START] }).y - 240;
+		Print << U"START1_S: " << camera.world_pos_to_screen_pos({ 0.0, 0.0, curveData[index + 1][IDX_START]}).y;
+		Print << U"START1_S - 240: " << camera.world_pos_to_screen_pos({ 0.0, 0.0, curveData[index + 1][IDX_START] }).y - 240;
 
 		double curve;
 		if (camera.get_z() < curveData.at(index + 1)[IDX_START])
@@ -109,6 +109,21 @@ private:
 		else
 			curve = curveData.at(index + 1)[IDX_CURVE];
 		Print << U"CURVE:" << curve;
+
+		// デバッグ
+		//double borderY = camera.camera_pos_to_screen_pos({ 0.0, -camera.get_y(), cbRoad->start1 }).y;
+		//double posY = 245;
+		//double rate = ((SCREEN_H - posY) - (SCREEN_H - borderY)) / (SCREEN_H/2 - (SCREEN_H - borderY));
+		//rate = pow(rate, 2.0);
+		//Print << U"";
+		//Print << U"borderY : " << borderY;
+		//Print << U"SCREEN_H - posY : " << SCREEN_H - posY;
+		//Print << U"SCREEN_H - borderY  : " << SCREEN_H - borderY;
+		//Print << U"SCREEN_H / 2 : " << SCREEN_H / 2;
+		//Print << U"SCREEN_H - borderY  : " << SCREEN_H - borderY;
+		//Print << U"rate: " << rate;
+		//Print << U"";
+		//Line(0, posY, 1000, posY).draw(Palette::Red);
 
 		if (
 			camera.get_z() > curveData.at(index + 1)[IDX_START]
@@ -129,18 +144,15 @@ private:
 		//};
 
 		// 前の前からの差は50以内で
+		// 50以内だと変化が近くで起こるから見えちゃう
 		curveData = {
 			{ 0.0, -13 },
 			{ 25.0, 0 },
 			{ 50.0, 14 },
 			{ 80.0, -7 },
-			//{ 50.0, 0.01301 },
-			//{ 0.0, -2000.0 },
-			//{ 20.0, 1500.0 },
-			//{ 80, 0.0 },
-			//{ 130, -1500 },
-			//{ 230, 0.0 },
 		};
+		for (auto& data : curveData)
+			data[1] /= 1000;
 	}
 
 	Vec2 pos2() const { return Vec2(pos.x, pos.y); }

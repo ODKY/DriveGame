@@ -45,7 +45,11 @@ cbuffer RoadData : register(b2) {
 	float curve1;
 };
 
-static float CAMERA_H = 145.0f;
+cbuffer CameraData : register(b3) {
+	float cameraH;
+}
+
+//static float CAMERA_H = 145.0f;
 static float SCREEN_H = 480.0f;
 
 //■//■//■//■//■// 関数 //■//■//■//■//■//
@@ -82,7 +86,7 @@ float4 ps_main(s3d::PSInput input) : SV_TARGET {
 	for (int i = 0; i < 2; ++i) {
 		if (start[i] < 0)
 			start[i] = 0;
-		curve[i] /= 1000;
+		//curve[i] /= 1000;
 	}
 	
 	// y軸反転（下から上へ伸ばす）;
@@ -95,11 +99,11 @@ float4 ps_main(s3d::PSInput input) : SV_TARGET {
 	// Yc / Zc = Ys より、Zc = Yc / Ys;
 	// Ycはカメラの高さに等しい（カメラから見た地面）;
 	// Ysは地平線を0として、下に軸を伸ばしたときのスクリーン座標である;
-	float z = (CAMERA_H / ((uv.y - 0.5) * SCREEN_H));
+	float z = (cameraH/ ((uv.y - 0.5) * SCREEN_H));
 	
 	// カーブとの境界線のY座標;
 	// 中央を0、下端を SCREEN_H / 2 としたときのピクセル数;
-	const float borderY_GI_toD = CAMERA_H / start[1];
+	const float borderY_GI_toD = cameraH / start[1];
 	
 	// 上記を正規化したもの;
 	const float borderY_GF_toD = borderY_GI_toD / (SCREEN_H / 2);

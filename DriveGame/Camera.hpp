@@ -21,17 +21,17 @@ public:
 
 	// 座標変換
 	// カメラ座標系 -> デバイス座標系
-	Point camera_pos_to_screen_pos(const Vec3& cameraToObject) const {
+	Vec2 camera_pos_to_screen_pos(const Vec3& cameraToObject) const {
 		double z = cameraToObject.z > 0 ? cameraToObject.z : 0.001;
-		return Point{
-			(int32)(cameraToObject.x / z) + screenCenter.x,
-			(int32)(cameraToObject.y / z) + screenCenter.y,
+		return Vec2{
+			(cameraToObject.x / z) + screenCenter.x,
+			(cameraToObject.y / z) + screenCenter.y,
 		};
 	}
 
 	// 座標変換
 	// ワールド座標系 -> デバイス座標系
-	Point world_pos_to_screen_pos(const Vec3& posInWorld) const {
+	Vec2 world_pos_to_screen_pos(const Vec3& posInWorld) const {
 		return camera_pos_to_screen_pos(world_pos_to_camera_pos(posInWorld));
 	}
 
@@ -50,10 +50,10 @@ public:
 
 	// ワールド座標と画像をもらってスクリーンに投影
 	// 描画した場合は true を返す
-	bool draw_object(const Vec3& posInWorld, const Texture& img, double scale = 1.0) const {
+	bool draw_object(const Vec3& posInWorld, const Texture& img, double scale = 1.0, const Vec2& offset = { 0.0, 0.0 }) const {
 		Vec3 posFromCamera = world_pos_to_camera_pos(posInWorld);
 		if (in_viewport(posFromCamera)) {
-			img.scaled(calc_scale(posFromCamera) * scale).drawAt(camera_pos_to_screen_pos(posFromCamera));
+			img.scaled(calc_scale(posFromCamera) * scale).drawAt(camera_pos_to_screen_pos(posFromCamera).movedBy(offset));
 			return true;
 		}
 		return false;

@@ -58,6 +58,12 @@ struct RoadData {
 	float curve0;
 	float curve1;
 };
+
+struct CameraData {
+	float cameraH;
+};
+extern ConstantBuffer<CameraData> cbCamera;
+
 extern ConstantBuffer<RoadData> cbRoad;
 
 inline void load_font() {

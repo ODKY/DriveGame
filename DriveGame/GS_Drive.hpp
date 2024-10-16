@@ -59,6 +59,9 @@ private:
 			camera.add_z(speed / 250 * Scene::DeltaTime());
 		if (KeyZ.pressed())
 			camera.add_z(-speed / 250 * Scene::DeltaTime());
+
+		cbCamera->cameraH = -camera.get_y();
+
 		Print << camera.get_pos();
 	}
 

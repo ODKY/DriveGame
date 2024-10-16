@@ -143,11 +143,11 @@ void Road::draw() const {
 		cbTime->time = (float)Scene::Time();
 		Graphics2D::SetPSConstantBuffer(1, cbTime);
 		Graphics2D::SetPSConstantBuffer(2, cbRoad);
+		Graphics2D::SetPSConstantBuffer(3, cbCamera);
 		const ScopedCustomShader2D shader{ *vertexShader, *pixelShader };
 		renderTexture.draw(-RENDER_TEXTURE_W_QUARTER, 0);
 	}
 
-	//auto pos = camera.world_pos_to_screen_pos({ 0, 0, 3 });
-	auto pos = camera.camera_pos_to_screen_pos({ 0, 145, 3 });
-	Line{ pos.x, pos.y, pos.x + 1300, pos.y }.draw(Palette::Red);
+	//auto pos = camera.camera_pos_to_screen_pos({ 0, 145, 3 });
+	//Line{ pos.x, pos.y, pos.x + 1300, pos.y }.draw(Palette::Red);
 }

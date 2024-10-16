@@ -24,3 +24,4 @@ unique_ptr<PixelShader> pixelShader;
 
 ConstantBuffer<TimeStruct> cbTime;
 ConstantBuffer<RoadData> cbRoad;
+ConstantBuffer<CameraData> cbCamera;
