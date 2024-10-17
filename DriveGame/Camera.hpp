@@ -6,6 +6,7 @@ class Camera {
 public:
 	static constexpr double NEAR_PLANE = 0.2;
 	static constexpr double FAR_PLANE = 50.0;
+	static constexpr double HEIGHT = 145.0;
 
 	constexpr Camera(const Vec3& pos_, const Size& screenSize_) :
 		screenSize(screenSize_),
@@ -51,6 +52,14 @@ public:
 	// ワールド座標と画像をもらってスクリーンに投影
 	// 描画した場合は true を返す
 	bool draw_object(const Vec3& posInWorld, const Texture& img, double scale = 1.0, const Vec2& offset = { 0.0, 0.0 }) const {
+		Vec3 posFromCamera = world_pos_to_camera_pos(posInWorld);
+		if (in_viewport(posFromCamera)) {
+			img.scaled(calc_scale(posFromCamera) * scale).drawAt(camera_pos_to_screen_pos(posFromCamera).movedBy(offset));
+			return true;
+		}
+		return false;
+	}
+	bool draw_object(const Vec3& posInWorld, const TextureRegion& img, double scale = 1.0, const Vec2& offset = { 0.0, 0.0 }) const {
 		Vec3 posFromCamera = world_pos_to_camera_pos(posInWorld);
 		if (in_viewport(posFromCamera)) {
 			img.scaled(calc_scale(posFromCamera) * scale).drawAt(camera_pos_to_screen_pos(posFromCamera).movedBy(offset));

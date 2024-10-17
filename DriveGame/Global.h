@@ -40,6 +40,14 @@ extern unique_ptr<Texture> imgBallonR;
 extern unique_ptr<Texture> imgTree01;
 extern unique_ptr<Texture> imgTree02;
 extern unique_ptr<Texture> imgGrass01;
+extern unique_ptr<vector<TextureRegion>> imgRedCar;
+extern unique_ptr<vector<TextureRegion>> imgBlackCar;
+extern unique_ptr<vector<TextureRegion>> imgBlueCar;
+constexpr int CAR_DEFAULT = 0;
+constexpr int CAR_LEFT1 = 1;
+constexpr int CAR_LEFT2 = 2;
+constexpr int CAR_RIGHT1 = 3;
+constexpr int CAR_RIGHT2 = 4;
 
 // シェーダー
 extern unique_ptr<VertexShader> vertexShader;
@@ -80,6 +88,25 @@ inline void load_image() {
 	imgTree01.reset(new Texture(U"./img/tree01.png"));
 	imgTree02.reset(new Texture(U"./img/tree02.png"));
 	imgGrass01.reset(new Texture(U"./img/grass01.png"));
+	Texture imgAll(U"./img/DriveGame.png");
+	imgRedCar.reset(new vector<TextureRegion>());
+	imgBlackCar.reset(new vector<TextureRegion>());
+	imgBlueCar.reset(new vector<TextureRegion>());
+	imgRedCar->push_back(imgAll(256 + 96 * 0, 256, 96, 96));
+	imgRedCar->push_back(imgAll(256 + 96 * 1, 256, 96, 96));
+	imgRedCar->push_back(imgAll(256 + 96 * 2, 256, 96, 96));
+	imgRedCar->push_back(imgAll(256 + 96 * 3, 256, 96, 96));
+	imgRedCar->push_back(imgAll(256 + 96 * 4, 256, 96, 96));
+	imgBlackCar->push_back(imgAll(256 + 96 * 0, 256 - 96, 96, 96));
+	imgBlackCar->push_back(imgAll(256 + 96 * 1, 256 - 96, 96, 96));
+	imgBlackCar->push_back(imgAll(256 + 96 * 2, 256 - 96, 96, 96));
+	imgBlackCar->push_back(imgAll(256 + 96 * 3, 256 - 96, 96, 96));
+	imgBlackCar->push_back(imgAll(256 + 96 * 4, 256 - 96, 96, 96));
+	imgBlueCar->push_back(imgAll(256 + 96 * 0, 256 + 96, 96, 96));
+	imgBlueCar->push_back(imgAll(256 + 96 * 1, 256 + 96, 96, 96));
+	imgBlueCar->push_back(imgAll(256 + 96 * 2, 256 + 96, 96, 96));
+	imgBlueCar->push_back(imgAll(256 + 96 * 3, 256 + 96, 96, 96));
+	imgBlueCar->push_back(imgAll(256 + 96 * 4, 256 + 96, 96, 96));
 }
 
 inline bool load_shader() {

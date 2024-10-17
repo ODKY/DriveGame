@@ -884,6 +884,9 @@
     <ClInclude Include="DistantView.hpp">
       <Filter>code</Filter>
     </ClInclude>
+    <ClInclude Include="Player.hpp">
+      <Filter>code</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="App\shader\road.hlsl">

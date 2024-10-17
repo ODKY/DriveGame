@@ -102,9 +102,12 @@ private:
 		Print << U"START0: " << cbRoad->start0;
 		Print << U"START1: " << cbRoad->start1;
 		Print << U"START2: " << cbRoad->start2;
+		Print << U"CURVE0: " << cbRoad->curve0;
+		Print << U"CURVE1: " << cbRoad->curve1;
+		Print << U"CURVE2: " << cbRoad->curve2;
 
-		Print << U"START1_S: " << camera.world_pos_to_screen_pos({ 0.0, 0.0, curveData[index + 1][IDX_START]}).y;
-		Print << U"START1_S - 240: " << camera.world_pos_to_screen_pos({ 0.0, 0.0, curveData[index + 1][IDX_START] }).y - 240;
+		//Print << U"START1_S: " << camera.world_pos_to_screen_pos({ 0.0, 0.0, curveData[index + 1][IDX_START]}).y;
+		//Print << U"START1_S - 240: " << camera.world_pos_to_screen_pos({ 0.0, 0.0, curveData[index + 1][IDX_START] }).y - 240;
 
 		double curve;
 		if (camera.get_z() < curveData.at(index + 1)[IDX_START])

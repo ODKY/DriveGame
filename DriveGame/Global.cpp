@@ -17,6 +17,9 @@ unique_ptr<Texture> imgBallonR;
 unique_ptr<Texture> imgTree01;
 unique_ptr<Texture> imgTree02;
 unique_ptr<Texture> imgGrass01;
+unique_ptr<vector<TextureRegion>> imgRedCar;
+unique_ptr<vector<TextureRegion>> imgBlackCar;
+unique_ptr<vector<TextureRegion>> imgBlueCar;
 
 // シェーダー
 unique_ptr<VertexShader> vertexShader;

@@ -4,6 +4,7 @@
 #include "Obj.hpp"
 #include "Road.h"
 #include "DistantView.hpp"
+#include "Player.hpp"
 
 class GS_Drive : public GameState {
 
@@ -16,6 +17,7 @@ public:
 		road(*add_object(new Road(camera))) {
 		perform_z_sort_every_frame(true);
 
+		add_object(new Player(*imgBlueCar, camera));
 		add_object(new DistantView(*imgMountIwate, camera));
 		for (int i = 0; i < 50; ++i) {
 			add_object(new Obj({ road.get_left_side_x() - 80, 0, i }, *imgTree01, camera));
@@ -37,28 +39,28 @@ private:
 	Road& road;
 
 	void update() override {
-		double speed = 400.0;
-		if (KeyUp.pressed())
-			camera.add_y(-speed *3* Scene::DeltaTime());
-		if (KeyRight.pressed())
-			camera.add_x(speed * Scene::DeltaTime());
-		if (KeyDown.pressed())
-			camera.add_y(speed *3* Scene::DeltaTime());
-		if (KeyLeft.pressed())
-			camera.add_x(-speed * Scene::DeltaTime());
+		//double speed = 400.0;
+		//if (KeyUp.pressed())
+		//	camera.add_y(-speed *3* Scene::DeltaTime());
+		//if (KeyRight.pressed())
+		//	camera.add_x(speed * Scene::DeltaTime());
+		//if (KeyDown.pressed())
+		//	camera.add_y(speed *3* Scene::DeltaTime());
+		//if (KeyLeft.pressed())
+		//	camera.add_x(-speed * Scene::DeltaTime());
 
-		if (KeyW.pressed())
-			camera.add_z(speed / 10 * Scene::DeltaTime());
-		if (KeyQ.pressed())
-			camera.add_z(-speed / 10 * Scene::DeltaTime());
-		if (KeyS.pressed())
-			camera.add_z(speed / 50 * Scene::DeltaTime());
-		if (KeyA.pressed())
-			camera.add_z(-speed / 50 * Scene::DeltaTime());
-		if (KeyX.pressed())
-			camera.add_z(speed / 250 * Scene::DeltaTime());
-		if (KeyZ.pressed())
-			camera.add_z(-speed / 250 * Scene::DeltaTime());
+		//if (KeyW.pressed())
+		//	camera.add_z(speed / 10 * Scene::DeltaTime());
+		//if (KeyQ.pressed())
+		//	camera.add_z(-speed / 10 * Scene::DeltaTime());
+		//if (KeyS.pressed())
+		//	camera.add_z(speed / 50 * Scene::DeltaTime());
+		//if (KeyA.pressed())
+		//	camera.add_z(-speed / 50 * Scene::DeltaTime());
+		//if (KeyX.pressed())
+		//	camera.add_z(speed / 250 * Scene::DeltaTime());
+		//if (KeyZ.pressed())
+		//	camera.add_z(-speed / 250 * Scene::DeltaTime());
 
 		cbCamera->cameraH = -camera.get_y();
 
