@@ -2,22 +2,38 @@
 
 #include "Global.h"
 #include "Camera.hpp"
+#include "Player.hpp"
 
 class Obj : public Object {
 
 public:
-	Obj(const Vec3& pos_, const TextureRegion& img_, const Camera& camera_, const double scale_ = 1.0) :
+	Obj(const Vec3& pos_, const TextureRegion& img_, const Camera& camera_, const double scale_, const Size& boxSize_, const Point& boxOffset_, const Player& player_) :
 		Object(pos_),
 		img(img_),
 		scale(scale_),
-		camera(camera_) {}
+		camera(camera_),
+		hitbox(boxSize_),
+		boxOffset(boxOffset_),
+		player(player_) {}
 
 private:
 	const TextureRegion& img;
 	const double scale;
 	const Camera& camera;
+	Rect hitbox;
+	Point boxOffset;
+	const Player& player;
 
 	bool update() override {
+		// 当たり判定の位置調整
+		int32 deltaX = camera.calc_delta_x(pos);
+		auto posS = camera.world_pos_to_screen_pos(pos);
+		hitbox.pos = { (int32)posS.x - hitbox.w / 2 + deltaX + boxOffset.x, (int32)posS.y + boxOffset.y };
+
+		// 当たり判定
+		if (hitbox.intersects(player.get_hit_box()))
+			isHit = true;
+
 		if (pos.z < camera.get_z())
 			return false;
 			//pos.z += 50;
@@ -27,7 +43,8 @@ private:
 	void draw() const override {
 		double deltaX = camera.calc_delta_x(pos);
 		camera.draw_object(pos.movedBy(0.0, -img.size.y * scale / 2.0 + ALL_OFFSET_Y, 0.0), img, scale, { deltaX, 0.0 });
-		
+		if (isDisplayHitBox)
+			hitbox.draw(Color(0, 0, 255, 128));
 		//Line(0, 245, 1000, 245).draw(Palette::Red);
 		//if (camera.in_viewport(camera.world_pos_to_camera_pos(pos)))
 		//	Circle(camera.world_pos_to_screen_pos(pos), 3).draw(Palette::Cyan);

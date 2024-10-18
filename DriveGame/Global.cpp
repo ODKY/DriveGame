@@ -32,3 +32,6 @@ ConstantBuffer<RoadData> cbRoad;
 ConstantBuffer<CameraData> cbCamera;
 
 double curveAmount = 0;
+
+bool isHit;
+bool isDisplayHitBox = false;

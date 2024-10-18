@@ -8,6 +8,8 @@ class OtherCar : public Object {
 
 	static constexpr double SPEED = 4.2;
 
+	static constexpr Size HIT_BOX_SIZE{ 84, 3 };
+
 public:
 	OtherCar(const Vec3& pos_, const vector<TextureRegion>& imgs_, const Camera& camera_, const Player& player_) :
 		Object(pos_),
@@ -16,7 +18,8 @@ public:
 		camera(camera_),
 		player(player_),
 		offsetX(0),
-		imgIdx(CAR_DEFAULT) {}
+		imgIdx(CAR_DEFAULT),
+		hitbox(HIT_BOX_SIZE) {}
 
 private:
 	const vector<TextureRegion>& imgs;
@@ -25,10 +28,10 @@ private:
 	const Player& player;
 	double offsetX;
 	int imgIdx;
+	Rect hitbox;
 
 	bool update() override {
 		pos.z += SPEED * Scene::DeltaTime();
-		Print << SPEED * Scene::DeltaTime() * 1000;
 
 		int direction = 0;
 
@@ -78,6 +81,15 @@ private:
 			break;
 		}
 
+		// 当たり判定の位置調整
+		int32 deltaX = camera.calc_delta_x(pos);
+		auto posS = camera.world_pos_to_screen_pos(pos);
+		hitbox.pos = { (int32)posS.x - hitbox.w / 2 + deltaX, (int32)posS.y - 20 };
+
+		// 当たり判定
+		if (hitbox.intersects(player.get_hit_box()))
+			isHit = true;
+
 		if (pos.z < camera.get_z() || pos.z > camera.get_z() + 100)
 			return false;
 		return true;
@@ -87,6 +99,8 @@ private:
 		double deltaX = camera.calc_delta_x(pos);
 		//int imgIdx = CAR_DEFAULT;
 		camera.draw_object(pos.movedBy(offsetX, -imgs.at(imgIdx).size.y * scale / 2.0 + ALL_OFFSET_Y, 0.0), imgs.at(imgIdx), scale, {deltaX, 0.0});
+		if (isDisplayHitBox)
+			hitbox.draw(Color(255, 0, 0, 128));
 
 		//Line(0, 245, 1000, 245).draw(Palette::Red);
 		//if (camera.in_viewport(camera.world_pos_to_camera_pos(pos)))

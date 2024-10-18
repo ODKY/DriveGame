@@ -4,14 +4,16 @@
 #include "Road.h"
 
 struct ObjectData {
-	ObjectData(Vec3 pos_, ImgPair pair_):
-		pos(pos_), imgIdx(pair_.index), scale(pair_.scale) {}
-	ObjectData(Vec3 pos_, int idx_, int scale_) :
-		pos(pos_), imgIdx(idx_), scale(scale_) {}
+	ObjectData(Vec3 pos_, ObjData data_):
+		pos(pos_), imgIdx(data_.index), scale(data_.scale), boxSize(data_.boxSize), boxOffset(data_.boxOffset) {}
+	ObjectData(Vec3 pos_, int idx_, int scale_, Size boxSize_, Point boxOffset_) :
+		pos(pos_), imgIdx(idx_), scale(scale_), boxSize(boxSize_), boxOffset(boxOffset_) {}
 
 	Vec3 pos{ 0.0, 0.0, 0.0 };
 	int imgIdx = 1.0;
 	double scale = 1.0;
+	Size boxSize;
+	Point boxOffset;
 };
 
 class StageData {
@@ -48,7 +50,7 @@ private:
 			double leftSideX = -roadWidth / 2.0;
 			double rightSideX = roadWidth / 2.0;
 			curveData[0] = {
-				{ 0.0, -18 },
+				{ 0.0, 0 },//-18 },
 				{ 25.0, 0 },
 				{ 50.0, 14 },
 				{ 80.0, -7 },
@@ -65,6 +67,7 @@ private:
 				{ INT_MAX, 0 },
 			};
 			auto& stage0 = objectData[0];
+			//stage0.push_back({ { leftSideX + 180, 0, 3 }, TREE1 });
 			for (int i = 0; i < 25; ++i) {
 				stage0.push_back({ { leftSideX + 10, 0, i }, TRAFFIC_LIGHT });
 				stage0.push_back({ { leftSideX - 100, 0, i }, TREE1 });

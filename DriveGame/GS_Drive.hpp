@@ -69,7 +69,7 @@ private:
 		while (1) {
 			if (objIdx < (int)objectData.size() && objectData.at(objIdx).pos.z < camera.get_z() + Camera::FAR_PLANE) {
 				const auto& obj = objectData.at(objIdx);
-				add_object(new Obj(obj.pos, imgObjects->at(obj.imgIdx), camera, obj.scale));
+				add_object(new Obj(obj.pos, imgObjects->at(obj.imgIdx), camera, obj.scale, obj.boxSize, obj.boxOffset, player));
 				++objIdx;
 			}
 			else
@@ -89,6 +89,10 @@ private:
 					add_object(new OtherCar(Vec3{ x, 0, camera.get_z() + Camera::FAR_PLANE }, *imgBlueCar, camera, player));
 			}
 		}
+
+		// デバッグ用
+		if (KeyT.down())
+			isDisplayHitBox = !isDisplayHitBox;
 	}
 
 	void draw() const override {
@@ -97,5 +101,9 @@ private:
 		Rect{ 0, SCREEN_CENTER.y, SCREEN_W, SCREEN_H/2 }.draw(
 			Arg::top = FLOOR_COLOR_TOP, Arg::bottom = FLOOR_COLOR_BOTTOM
 		);
+
+		if (isHit)
+			Rect{ 0, SCREEN_CENTER.y, SCREEN_W, SCREEN_H / 2 }.draw(Palette::Yellow);
+		isHit = false;
 	}
 };

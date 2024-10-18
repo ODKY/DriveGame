@@ -35,6 +35,10 @@ extern unique_ptr<Font> fontDeb;
 // ゲームステートマネージャー
 extern unique_ptr<GameStateManager> gsm;
 
+// デバッグ用変数
+extern bool isHit;
+extern bool isDisplayHitBox;
+
 // 画像
 extern unique_ptr<Texture> imgMountIwate;
 //extern unique_ptr<Texture> imgBallonR;
@@ -42,37 +46,39 @@ extern unique_ptr<Texture> imgMountIwate;
 //extern unique_ptr<Texture> imgTree02;
 //extern unique_ptr<Texture> imgGrass01;
 
-struct ImgPair {
+struct ObjData {
 	int index;
 	double scale;
+	Size boxSize;
+	Point boxOffset;
 };
 
-constexpr int IMG_RED_BALLON = 0;
-constexpr int IMG_YELLOW_BALLON = 1;
-constexpr int IMG_BLUE_BALLON = 2;
-constexpr array<int, 3> IMG_BALLONS = { IMG_RED_BALLON, IMG_YELLOW_BALLON ,IMG_BLUE_BALLON };
-constexpr int IMG_GRASS1 = 3;
-constexpr int IMG_TREE1 = 4;
-constexpr int IMG_TREE2 = 5;
-constexpr int IMG_TRAFFIC_LIGHT = 6;
-constexpr int IMG_ARROW1 = 7;
+//constexpr int IMG_RED_BALLON = 0;
+//constexpr int IMG_YELLOW_BALLON = 1;
+//constexpr int IMG_BLUE_BALLON = 2;
+//constexpr array<int, 3> IMG_BALLONS = { IMG_RED_BALLON, IMG_YELLOW_BALLON ,IMG_BLUE_BALLON };
+//constexpr int IMG_GRASS1 = 3;
+//constexpr int IMG_TREE1 = 4;
+//constexpr int IMG_TREE2 = 5;
+//constexpr int IMG_TRAFFIC_LIGHT = 6;
+//constexpr int IMG_ARROW1 = 7;
 
-constexpr double SCALE_BALLON = 2.0;
-constexpr double SCALE_GRASS1 = 1.0;
-constexpr double SCALE_TREE1 = 1.0;
-constexpr double SCALE_TREE2 = 3.0;
-constexpr double SCALE_TRAFFIC_LIGHT = 2.0;
-constexpr double SCALE_ARROW1 = 3.0;
+//constexpr double SCALE_BALLON = 2.0;
+//constexpr double SCALE_GRASS1 = 1.0;
+//constexpr double SCALE_TREE1 = 1.0;
+//constexpr double SCALE_TREE2 = 3.0;
+//constexpr double SCALE_TRAFFIC_LIGHT = 2.0;
+//constexpr double SCALE_ARROW1 = 3.0;
 
-constexpr ImgPair RED_BALLON{ IMG_RED_BALLON, SCALE_BALLON };
-constexpr ImgPair YELLOW_BALLON{ IMG_YELLOW_BALLON, SCALE_BALLON };
-constexpr ImgPair BLUE_BALLON{ IMG_BLUE_BALLON, SCALE_BALLON };
-constexpr array<ImgPair, 3> BALLONS = { RED_BALLON, YELLOW_BALLON, BLUE_BALLON };
-constexpr ImgPair GRASS1{ IMG_GRASS1, SCALE_GRASS1 };
-constexpr ImgPair TREE1{ IMG_TREE1, SCALE_TREE1 };
-constexpr ImgPair TREE2{ IMG_TREE2, SCALE_TREE2 };
-constexpr ImgPair TRAFFIC_LIGHT{ IMG_TRAFFIC_LIGHT, SCALE_TRAFFIC_LIGHT };
-constexpr ImgPair ARROW{ IMG_ARROW1, SCALE_ARROW1 };
+constexpr ObjData RED_BALLON{ 0, 2.0, {0, 0}, {0, 0} };
+constexpr ObjData YELLOW_BALLON{ 1, 2.0, {0, 0}, {0, 0} };
+constexpr ObjData BLUE_BALLON{ 2, 2.0, {0, 0}, {0, 0} };
+constexpr array<ObjData, 3> BALLONS = { RED_BALLON, YELLOW_BALLON, BLUE_BALLON };
+constexpr ObjData GRASS1{ 3, 1.0, {0, 0}, {0, 0} };
+constexpr ObjData TREE1{ 4, 1.0, {3, 3}, {0, -7} };
+constexpr ObjData TREE2{ 5, 3.0, {20, 3}, {0, -3} };
+constexpr ObjData TRAFFIC_LIGHT{ 6, 2.0, {3, 3}, {-58, 10} };
+constexpr ObjData ARROW{ 7, 3.0, {70, 3}, {0, -30} };
 
 extern unique_ptr<vector<TextureRegion>> imgRedCar;
 extern unique_ptr<vector<TextureRegion>> imgBlackCar;

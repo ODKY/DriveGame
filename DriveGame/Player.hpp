@@ -16,6 +16,8 @@ class Player : public Object {
 	static constexpr double BRAKE = -0.2;
 	static constexpr double XSPEED = 300;
 
+	static constexpr Size HIT_BOX_SIZE{ 84, 35 };
+
 public:
 	Player(const vector<TextureRegion>& imgs_, Camera& camera_) :
 		Object(POS),
@@ -24,7 +26,9 @@ public:
 		camera(camera_),
 		imgIdx(CAR_DEFAULT),
 		offset(),
-		velocity() {}
+		velocity(),
+		hitbox(HIT_BOX_SIZE) {
+	}
 
 	const Vec2& get_velocity() const {
 		return velocity;
@@ -34,6 +38,10 @@ public:
 		return pos;
 	}
 
+	const Rect& get_hit_box() const {
+		return hitbox;
+	}
+
 private:
 	const vector<TextureRegion>& imgs;
 	const double scale;
@@ -41,6 +49,7 @@ private:
 	int imgIdx;
 	Vec2 offset;
 	Vec2 velocity;
+	Rect hitbox;
 
 	bool update() override {
 		int32 direction = 0;
@@ -150,6 +159,10 @@ private:
 
 		cbCamera->cameraH = -camera.get_y();
 
+		// 当たり判定の位置調整
+		auto posS = camera.world_pos_to_screen_pos(pos);
+		hitbox.pos = { (int32)posS.x - hitbox.w / 2, (int32)posS.y - 90 };
+
 		return true;
 	}
 
@@ -157,12 +170,19 @@ private:
 		const TextureRegion& img = imgs.at(imgIdx);
 		Print << offset;
 
+		// 速度出力
 		int32 v = (int32)(velocity.y * 1000);
 		Point vPos{ 470, 13 };
 		Rect{ vPos.x - 15, vPos.y - 5, 160, 55 }.draw({ 0, 0, 0, 0.4}).drawFrame(3, Palette::Black);
 		(*fontA)(U"{:0>3}Km/h"_fmt(v)).draw(vPos + Point{ 3, 3 }, Palette::Black);
 		(*fontA)(U"{:0>3}Km/h"_fmt(v)).draw(vPos, Palette::Yellow);
+
+		// 車描画
 		camera.draw_object(pos.movedBy(offset.x, -IMG_SIZE.y * scale / 2.0 + ALL_OFFSET_Y, 0.0), img, scale);
+		if (isDisplayHitBox)
+			hitbox.draw(Color(0, 255, 0, 128));
+		//auto posS = camera.world_pos_to_screen_pos(pos);
+		//Rect{ Arg::center((int32)posS.x, (int32)posS.y - 80), HIT_BOX_SIZE }.draw(Color(0, 255, 0, 128));
 	}
 
 	int debug_control() {
