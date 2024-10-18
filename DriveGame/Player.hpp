@@ -26,6 +26,14 @@ public:
 		offset(),
 		velocity() {}
 
+	const Vec2& get_velocity() const {
+		return velocity;
+	}
+
+	const Vec3& get_pos() const {
+		return pos;
+	}
+
 private:
 	const vector<TextureRegion>& imgs;
 	const double scale;
@@ -48,9 +56,9 @@ private:
 			inputX = 0;
 		if (inputY > -0.5 && inputY < 0.5)
 			inputY = 0;
-		Print << U"A: " << buttonA;
-		Print << U"B: " << buttonB;
-		Print << U"XY: " << Vec2(inputX, inputY);
+		//Print << U"A: " << buttonA;
+		//Print << U"B: " << buttonB;
+		//Print << U"XY: " << Vec2(inputX, inputY);
 
 		// 速度算出
 		if (inputX > 0.5) {
@@ -100,7 +108,7 @@ private:
 		// 移動
 		pos.x += velocity.x;
 		pos.z += velocity.y;
-		curveAmount += velocity.y * camera.get_cameras_curve();
+		curveAmount += velocity.y * camera.get_cameras_curve() * Scene::DeltaTime();
 
 		// カーブの膨らみ
 		pos.x += velocity.y * 130000 * -curve * Scene::DeltaTime();
@@ -110,43 +118,7 @@ private:
 		Print << U"速度 : " << v << U"Km/h";
 		velocity.x = 0;
 
-		// 移動
-		double speed = 400.0;
-		if (KeyUp.pressed())
-			pos.y += (-speed * 3 * Scene::DeltaTime());
-		if (KeyRight.pressed()) {
-			pos.x += (speed * Scene::DeltaTime());
-			++direction;
-		}
-		if (KeyDown.pressed())
-			pos.y += (speed * 3 * Scene::DeltaTime());
-		if (KeyLeft.pressed()) {
-			pos.x += (-speed * Scene::DeltaTime());
-			--direction;
-		}
-
-		if (KeyW.pressed()) {
-			double deltaZ = (speed / 10 * Scene::DeltaTime());
-			pos.z += deltaZ;
-			curveAmount += deltaZ * camera.get_cameras_curve();
-
-		}
-		if (KeyQ.pressed())
-			pos.z += (-speed / 10 * Scene::DeltaTime());
-		if (KeyS.pressed()) {
-			double deltaZ = (speed / 50 * Scene::DeltaTime());
-			pos.z += deltaZ;
-			curveAmount += deltaZ * camera.get_cameras_curve();
-		}
-		if (KeyA.pressed())
-			pos.z += (-speed / 50 * Scene::DeltaTime());
-		if (KeyX.pressed()) {
-			double deltaZ = (speed / 250 * Scene::DeltaTime());
-			pos.z += deltaZ;
-			curveAmount += deltaZ * camera.get_cameras_curve();
-		}
-		if (KeyZ.pressed())
-			pos.z += (-speed / 250 * Scene::DeltaTime());
+		direction += debug_control();
 
 		// 向きに応じた絵の選択
 		switch (direction) {
@@ -193,7 +165,46 @@ private:
 		camera.draw_object(pos.movedBy(offset.x, -IMG_SIZE.y * scale / 2.0 + ALL_OFFSET_Y, 0.0), img, scale);
 	}
 
-	void debug_control() {
+	int debug_control() {
+		// 移動
+		int direction = 0;
+		double speed = 400.0;
+		if (KeyUp.pressed())
+			pos.y += (-speed * 3 * Scene::DeltaTime());
+		if (KeyRight.pressed()) {
+			pos.x += (speed * Scene::DeltaTime());
+			++direction;
+		}
+		if (KeyDown.pressed())
+			pos.y += (speed * 3 * Scene::DeltaTime());
+		if (KeyLeft.pressed()) {
+			pos.x += (-speed * Scene::DeltaTime());
+			--direction;
+		}
 
+		if (KeyW.pressed()) {
+			double deltaZ = (speed / 10 * Scene::DeltaTime());
+			pos.z += deltaZ;
+			curveAmount += deltaZ * camera.get_cameras_curve();
+
+		}
+		if (KeyQ.pressed())
+			pos.z += (-speed / 10 * Scene::DeltaTime());
+		if (KeyS.pressed()) {
+			double deltaZ = (speed / 50 * Scene::DeltaTime());
+			pos.z += deltaZ;
+			curveAmount += deltaZ * camera.get_cameras_curve();
+		}
+		if (KeyA.pressed())
+			pos.z += (-speed / 50 * Scene::DeltaTime());
+		if (KeyX.pressed()) {
+			double deltaZ = (speed / 250 * Scene::DeltaTime());
+			pos.z += deltaZ;
+			curveAmount += deltaZ * camera.get_cameras_curve();
+		}
+		if (KeyZ.pressed())
+			pos.z += (-speed / 250 * Scene::DeltaTime());
+
+		return direction;
 	}
 };

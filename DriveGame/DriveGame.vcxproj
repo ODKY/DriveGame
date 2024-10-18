@@ -339,6 +339,7 @@
     <ClInclude Include="Global.h" />
     <ClInclude Include="GS_Drive.hpp" />
     <ClInclude Include="Obj.hpp" />
+    <ClInclude Include="OtherCar.hpp" />
     <ClInclude Include="Player.hpp" />
     <ClInclude Include="Road.h" />
     <ClInclude Include="sgm\CollisionManager.h" />

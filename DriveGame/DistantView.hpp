@@ -21,7 +21,7 @@ private:
 	const Camera& camera;
 
 	bool update() override {
-		pos.x = DEFAULT_X - curveAmount * 1300;
+		pos.x = DEFAULT_X - curveAmount * 73000;
 		return true;
 	}
 

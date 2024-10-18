@@ -19,8 +19,10 @@ class Road : public Object {
 	static constexpr int32 POS_X = 0;
 	static constexpr int32 POS_Y = 0;
 
+public:
 	// 1車線の幅
 	static constexpr int32 LANE_WIDTH = 200;
+private:
 	
 	// 通常の線のパラメータ
 	static constexpr int32 LINE_WIDTH = 10;
@@ -36,8 +38,10 @@ class Road : public Object {
 	// 一番外側の線
 	static constexpr int32 SIDE_LINE_OUT_WIDTH = 10;
 
+public:
 	// 外側にあるやつ全体の幅
 	static constexpr int32 ALL_PADDING = SIDE_LINE_IN_WIDTH + SIDE_LINE_IN_PADDING + SIDE_LINE_OUT_WIDTH;
+private:
 
 	// 車線の数と道路全体の幅
 	static constexpr int32 LANE_NUM = 5;

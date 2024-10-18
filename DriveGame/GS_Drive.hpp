@@ -6,6 +6,7 @@
 #include "DistantView.hpp"
 #include "Player.hpp"
 #include "StageData.hpp"
+#include "OtherCar.hpp"
 
 class GS_Drive : public GameState {
 
@@ -17,17 +18,18 @@ class GS_Drive : public GameState {
 public:
 	GS_Drive() :
 		camera({ 0.0, -145.0, 0.0 }, { SCREEN_W, SCREEN_H }),
+		player(*add_object(new Player(*imgBlackCar, camera))),
 		stageData(),
 		road(*add_object(new Road(camera, stageData.get_lane_num(STAGE_ID)))),
 		objectData(),
-		objIdx(0) {
+		objIdx(0),
+		otherCarGauge(0) {
 
 		perform_z_sort_every_frame(true);
 
 		road.set_curve_pos(stageData.get_curve_data(STAGE_ID));
 		objectData = stageData.get_object_data(STAGE_ID);
 
-		add_object(new Player(*imgBlackCar, camera));
 		add_object(new DistantView(*imgMountIwate, camera));
 		//for (int i = 0; i < 50; ++i) {
 		//	add_object(new Obj({ road.get_left_side_x() + 10, 0, i }, imgObjects->at(IMG_TRAFFIC_LIGHT), camera, 2));
@@ -54,12 +56,16 @@ public:
 
 private:
 	Camera camera;
+	Player& player;
 	StageData stageData;
 	Road& road;
 	vector<ObjectData> objectData;
 	int objIdx;
+	double otherCarGauge;
 
 	void update() override {
+
+		// オブジェクトデータを参照し、一定距離内に入ったオブジェクトを実体化
 		while (1) {
 			if (objIdx < (int)objectData.size() && objectData.at(objIdx).pos.z < camera.get_z() + Camera::FAR_PLANE) {
 				const auto& obj = objectData.at(objIdx);
@@ -69,9 +75,25 @@ private:
 			else
 				break;
 		}
+
+		// 他車の生成
+		otherCarGauge += player.get_velocity().y;
+		if (otherCarGauge > 10) {
+			otherCarGauge -= 10;
+			if (random() % 3 == 0) {
+				int lane = random() % stageData.get_lane_num(STAGE_ID);
+				double x = road.get_left_side_x() + Road::ALL_PADDING + lane * Road::LANE_WIDTH + Road::LANE_WIDTH / 2;
+				if (random() % 2 == 0)
+					add_object(new OtherCar(Vec3{ x, 0, camera.get_z() + Camera::FAR_PLANE }, *imgRedCar, camera, player));
+				else
+					add_object(new OtherCar(Vec3{ x, 0, camera.get_z() + Camera::FAR_PLANE }, *imgBlueCar, camera, player));
+			}
+		}
 	}
 
 	void draw() const override {
+
+		// 地面の描画
 		Rect{ 0, SCREEN_CENTER.y, SCREEN_W, SCREEN_H/2 }.draw(
 			Arg::top = FLOOR_COLOR_TOP, Arg::bottom = FLOOR_COLOR_BOTTOM
 		);
