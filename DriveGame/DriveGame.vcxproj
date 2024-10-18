@@ -351,6 +351,7 @@
     <ClInclude Include="sgm\sgm.h" />
     <ClInclude Include="sgm\sgmPlus.h" />
     <ClInclude Include="sgm\std.h" />
+    <ClInclude Include="StageData.hpp" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>

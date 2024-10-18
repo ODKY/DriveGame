@@ -39,6 +39,7 @@ public:
 			if (i % 9 == 6)
 				add_object(new Obj({ road.get_left_side_x() + random() % (int)road.get_road_width(), -180 - (int)(random() % 80), i }, imgObjects->at(IMG_YELLOW_BALLON), camera, 2));
 		}
+		add_object(new Obj({ road.get_left_side_x() + 250, 0, 50 }, imgObjects->at(IMG_TREE2), camera, 3));
 	}
 
 private:
@@ -71,7 +72,7 @@ private:
 
 		cbCamera->cameraH = -camera.get_y();
 
-		Print << camera.get_pos();
+		Print << U"CAMERA_POS : " << camera.get_pos();
 	}
 
 	void draw() const override {

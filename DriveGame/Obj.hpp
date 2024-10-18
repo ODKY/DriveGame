@@ -19,7 +19,8 @@ private:
 
 	bool update() override {
 		if (pos.z < camera.get_z())
-			pos.z += 50;
+			return false;
+			//pos.z += 50;
 		return true;
 	}
 

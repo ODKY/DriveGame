@@ -66,7 +66,7 @@ private:
 			++direction;
 		else if (curve < -0.01)
 			--direction;
-		Print << U"PLAYER_Z : " << pos.z;
+		Print << U"PLAYER_POS : " << pos;
 		Print << U"NOW CURVE : " << curve;
 
 		// 向きに応じた絵の選択

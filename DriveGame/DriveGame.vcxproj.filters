@@ -887,6 +887,9 @@
     <ClInclude Include="Player.hpp">
       <Filter>code</Filter>
     </ClInclude>
+    <ClInclude Include="StageData.hpp">
+      <Filter>code</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="App\shader\road.hlsl">

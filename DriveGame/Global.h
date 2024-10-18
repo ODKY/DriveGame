@@ -48,6 +48,14 @@ constexpr int IMG_TREE1 = 4;
 constexpr int IMG_TREE2 = 5;
 constexpr int IMG_TRAFFIC_LIGHT = 6;
 constexpr int IMG_ARROW1 = 7;
+
+constexpr double SCALE_BALLON = 2.0;
+constexpr double SCALE_GRASS1 = 1.0;
+constexpr double SCALE_TREE1 = 1.0;
+constexpr double SCALE_TREE2 = 3.0;
+constexpr double SCALE_TRAFFIC_LIGHT = 2.0;
+constexpr double SCALE_ARROW1 = 3.0;
+
 extern unique_ptr<vector<TextureRegion>> imgRedCar;
 extern unique_ptr<vector<TextureRegion>> imgBlackCar;
 extern unique_ptr<vector<TextureRegion>> imgBlueCar;

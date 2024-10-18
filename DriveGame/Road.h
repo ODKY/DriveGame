@@ -71,6 +71,10 @@ public:
 		return roadWidth;
 	}
 
+	static double calc_road_width(const int laneNum) {
+		return LANE_WIDTH * laneNum + ALL_PADDING * 2;
+	}
+
 private:
 	const Camera& camera;
 	int32 roadWidth;

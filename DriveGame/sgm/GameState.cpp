@@ -1,6 +1,7 @@
 ﻿
 #include "GameState.h"
 //#include "Object.hpp"
+#include <Siv3D.hpp>
 
 using namespace SGM2;
 
@@ -24,7 +25,7 @@ using namespace SGM2;
 //}
 
 // Zソートはフラグが立っていれば毎回行われる
-// 前から描画するので降順
+// 配列の前から描画するので降順
 // Zが小さいほど手前に描画される
 void GameState::z_sort() {
 	std::sort(objectsDraw->begin(), objectsDraw->end(), [](const auto& v0, const auto& v1) {
@@ -57,12 +58,14 @@ void GameState::trigger_update() {
 	// 削除するので後ろから
 	// 後ろからやるのならis_sortedの判定いらない？
 	// いや、いるな。GSから追加されることもあるし
+	vector<int> deleteIdList;
 	for (int i = (int)objects->size() - 1; i >= 0; --i) {
 		auto& obj = objects->at(i);
 		if (obj->is_active() && obj->is_sorted())
 			if (!obj->trigger_update()) {
+				deleteIdList.push_back(obj->get_id());
 				objects->erase(objects->begin() + i);
-				objectsDraw->erase(objectsDraw->begin() + i);
+				//objectsDraw->erase(objectsDraw->begin() + i);
 			}
 	}
 	//for (int i = 0; i < (int)objects->size(); ++i) {
@@ -80,10 +83,18 @@ void GameState::trigger_update() {
 	update();
 	draw();
 
+	// オブジェクトの削除（2回目）
+	for (int i = (int)objectsDraw->size() - 1; i >= 0; --i) {
+		auto& obj = objectsDraw->at(i);
+		if (std::ranges::contains(deleteIdList, obj->get_id()))
+			objectsDraw->erase(objectsDraw->begin() + i);
+	}
+
 	// オブジェクトの描画
-	for (const auto& obj : *objectsDraw)
+	for (const auto& obj : *objectsDraw) {
 		if (obj->isSorted)
 			obj->draw();
+	}
 
 	// エフェクト描画
 	// エフェクトとオブジェクトの前後関係はまだ制御できない
@@ -94,7 +105,13 @@ void GameState::trigger_update() {
 	//	if (obj->isSorted)
 	//		obj->draw();
 
-#include <Siv3D.hpp>
 	Print << U"objects num 0 : " << objects->size();
 	Print << U"objects num 1 : " << objectsDraw->size();
+	if (objects->size() != objectsDraw->size()) {
+		Print << U"ERROR";
+	}
+	//for (int i = 0; i < objects->size(); ++i) {
+	//	if (objects->at(i)->get_id() != objectsDraw->at(i)->get_id())
+	//		Print << U"ERROR";
+	//}
 }
