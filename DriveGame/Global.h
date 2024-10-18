@@ -29,6 +29,7 @@ extern std::mt19937 random;
 
 // フォント
 extern unique_ptr<Font> fontA;
+extern unique_ptr<Font> fontB;
 extern unique_ptr<Font> fontDeb;
 
 // ゲームステートマネージャー
@@ -40,9 +41,16 @@ extern unique_ptr<Texture> imgMountIwate;
 //extern unique_ptr<Texture> imgTree01;
 //extern unique_ptr<Texture> imgTree02;
 //extern unique_ptr<Texture> imgGrass01;
+
+struct ImgPair {
+	int index;
+	double scale;
+};
+
 constexpr int IMG_RED_BALLON = 0;
 constexpr int IMG_YELLOW_BALLON = 1;
 constexpr int IMG_BLUE_BALLON = 2;
+constexpr array<int, 3> IMG_BALLONS = { IMG_RED_BALLON, IMG_YELLOW_BALLON ,IMG_BLUE_BALLON };
 constexpr int IMG_GRASS1 = 3;
 constexpr int IMG_TREE1 = 4;
 constexpr int IMG_TREE2 = 5;
@@ -55,6 +63,16 @@ constexpr double SCALE_TREE1 = 1.0;
 constexpr double SCALE_TREE2 = 3.0;
 constexpr double SCALE_TRAFFIC_LIGHT = 2.0;
 constexpr double SCALE_ARROW1 = 3.0;
+
+constexpr ImgPair RED_BALLON{ IMG_RED_BALLON, SCALE_BALLON };
+constexpr ImgPair YELLOW_BALLON{ IMG_YELLOW_BALLON, SCALE_BALLON };
+constexpr ImgPair BLUE_BALLON{ IMG_BLUE_BALLON, SCALE_BALLON };
+constexpr array<ImgPair, 3> BALLONS = { RED_BALLON, YELLOW_BALLON, BLUE_BALLON };
+constexpr ImgPair GRASS1{ IMG_GRASS1, SCALE_GRASS1 };
+constexpr ImgPair TREE1{ IMG_TREE1, SCALE_TREE1 };
+constexpr ImgPair TREE2{ IMG_TREE2, SCALE_TREE2 };
+constexpr ImgPair TRAFFIC_LIGHT{ IMG_TRAFFIC_LIGHT, SCALE_TRAFFIC_LIGHT };
+constexpr ImgPair ARROW{ IMG_ARROW1, SCALE_ARROW1 };
 
 extern unique_ptr<vector<TextureRegion>> imgRedCar;
 extern unique_ptr<vector<TextureRegion>> imgBlackCar;
@@ -69,6 +87,9 @@ extern unique_ptr<vector<TextureRegion>> imgObjects;
 // シェーダー
 extern unique_ptr<VertexShader> vertexShader;
 extern unique_ptr<PixelShader> pixelShader;
+
+// 全体のカーブ量
+extern double curveAmount;
 
 // コンスタントバッファー
 struct TimeStruct {
@@ -96,7 +117,10 @@ extern ConstantBuffer<RoadData> cbRoad;
 inline void load_font() {
 	//fontA = std::make_unique<Font>(FontMethod::Bitmap, 12, FileSystem::GetFolderPath(SpecialFolder::SystemFonts) + U"msgothic.ttc", FontStyle::Bitmap);
 	fontDeb = std::make_unique<Font>(FontMethod::Bitmap, 23, U"font/PixelMplus12-Regular.ttf", FontStyle::Bitmap);
-	fontA = std::make_unique<Font>(FontMethod::Bitmap, 32, U"font/PixelMplus12-Regular.ttf", FontStyle::Bitmap);
+	fontA = std::make_unique<Font>(FontMethod::Bitmap, 38, U"font/PixelMplus12-Regular.ttf", FontStyle::Bitmap);
+	fontB = std::make_unique<Font>(FontMethod::Bitmap, 43, U"font/PixelMplus12-Regular.ttf", FontStyle::Bitmap);
+	if (!fontDeb || !fontA)
+		System::MessageBoxOK(U"exception", U"フォントの読み込みに失敗！", MessageBoxStyle::Error);
 }
 
 inline void load_image() {

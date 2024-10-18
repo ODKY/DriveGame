@@ -68,6 +68,11 @@ public:
 		return false;
 	}
 
+	// カメラが乗ってる道のカーブ値
+	double get_cameras_curve() const {
+		return cbRoad->curve0;
+	}
+
 	void set_pos(const Vec3& pos_) { pos = pos_; }
 	void move(const Vec3& move) { pos += move; }
 	void add_x(const double x) { pos.x += x; }

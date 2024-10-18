@@ -6,6 +6,7 @@ std::mt19937 random;
 
 // フォント
 unique_ptr<Font> fontA;
+unique_ptr<Font> fontB;
 unique_ptr<Font> fontDeb;
 
 // ゲームステートマネージャー
@@ -29,3 +30,5 @@ unique_ptr<PixelShader> pixelShader;
 ConstantBuffer<TimeStruct> cbTime;
 ConstantBuffer<RoadData> cbRoad;
 ConstantBuffer<CameraData> cbCamera;
+
+double curveAmount = 0;

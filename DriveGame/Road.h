@@ -50,14 +50,15 @@ class Road : public Object {
 	static constexpr int IDX_CURVE = 1;
 
 public:
-	Road(const Camera& camera_) :
+	Road(const Camera& camera_, const int32 laneNum_) :
 		Object({ 0.0, 0.0, INT_MAX }),
 		camera(camera_),
-		roadWidth(ROAD_WIDTH),
+		laneNum(laneNum_),
+		roadWidth(calc_road_width(laneNum)),
 		renderTexture(RENDER_TEXTURE_W, SCREEN_H, Palette::Black),
 		curveData(),
 		index(0) {
-		set_curve_pos();
+		//set_curve_pos();
 	}
 
 	double get_left_side_x() const {
@@ -75,8 +76,14 @@ public:
 		return LANE_WIDTH * laneNum + ALL_PADDING * 2;
 	}
 
+	// コピーすべきじゃないよね
+	void set_curve_pos(const vector<array<double, 2>>& data) {
+		curveData = data;
+	}
+
 private:
 	const Camera& camera;
+	int32 laneNum;
 	int32 roadWidth;
 	RenderTexture renderTexture;
 	vector<array<double, 2>> curveData;
@@ -99,50 +106,54 @@ private:
 			) {
 			++index;
 		}
-		return true;
 
 		// 以下全部デバッグ
-		Print << U"START0: " << cbRoad->start0;
-		Print << U"START1: " << cbRoad->start1;
-		Print << U"START2: " << cbRoad->start2;
-		Print << U"CURVE0: " << cbRoad->curve0;
-		Print << U"CURVE1: " << cbRoad->curve1;
-		Print << U"CURVE2: " << cbRoad->curve2;
+		//Print << U"START0: " << cbRoad->start0;
+		//Print << U"START1: " << cbRoad->start1;
+		//Print << U"START2: " << cbRoad->start2;
+		//Print << U"CURVE0: " << cbRoad->curve0;
+		//Print << U"CURVE1: " << cbRoad->curve1;
+		//Print << U"CURVE2: " << cbRoad->curve2;
 
-		double curve;
-		if (camera.get_z() < curveData.at(index + 1)[IDX_START])
-			curve = curveData.at(index)[IDX_CURVE];
-		else
-			curve = curveData.at(index + 1)[IDX_CURVE];
-		Print << U"CURVE:" << curve;
+		//double curve;
+		//if (camera.get_z() < curveData.at(index + 1)[IDX_START])
+		//	curve = curveData.at(index)[IDX_CURVE];
+		//else
+		//	curve = curveData.at(index + 1)[IDX_CURVE];
+		//Print << U"CURVE: " << curve;
+		//Print << U"CURVE: " << camera.get_cameras_curve();
+
+		Print << U"CurveAmount : " << curveAmount;
+
+		return true;
 	}
 
 	void draw() const override;
 
-	void set_curve_pos() {
+	//void set_curve_pos() {
 
-		// 前の前からの差は50以内で
-		// 50以内だと変化が近くで起こるから見えちゃう
-		curveData = {
-			{ 0.0, -18 },
-			{ 25.0, 0 },
-			{ 50.0, 14 },
-			{ 80.0, -7 },
-			{ 90.0, 16 },
-			{ 130.0, 0 },
-			{ 155.0, -18 },
-			{ 180.0, 18 },
-			{ 205.0, -18 },
-			{ 230.0, 0 },
-			{ 275.0, 20 },
-			{ 280.0, -20 },
-			{ 325.0, 0 },
-			{ INT_MAX - 1, 0 },
-			{ INT_MAX, 0 },
-		};
-		for (auto& data : curveData)
-			data[1] /= 1000;
-	}
+	//	// 前の前からの差は50以内で
+	//	// 50以内だと変化が近くで起こるから見えちゃう
+	//	curveData = {
+	//		{ 0.0, -18 },
+	//		{ 25.0, 0 },
+	//		{ 50.0, 14 },
+	//		{ 80.0, -7 },
+	//		{ 90.0, 16 },
+	//		{ 130.0, 0 },
+	//		{ 155.0, -18 },
+	//		{ 180.0, 18 },
+	//		{ 205.0, -18 },
+	//		{ 230.0, 0 },
+	//		{ 275.0, 20 },
+	//		{ 280.0, -20 },
+	//		{ 325.0, 0 },
+	//		{ INT_MAX - 1, 0 },
+	//		{ INT_MAX, 0 },
+	//	};
+	//	for (auto& data : curveData)
+	//		data[1] /= 1000;
+	//}
 
 	Vec2 pos2() const { return Vec2(pos.x, pos.y); }
 	Point pos2I() const { return Point((int32)pos.x, (int32)pos.y); }

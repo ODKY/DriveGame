@@ -68,7 +68,7 @@ void Road::draw() const {
 
 
 		// 分離線描画
-		for (int i = 1; i < LANE_NUM; ++i) {
+		for (int i = 1; i < laneNum; ++i) {
 			for (int j = 0; j < LINE_NUM; ++j) {
 
 				// 線の長さを L としたときに、2L - (進行距離 % 2L) + 進行距離 - L を線のスタートとしている
