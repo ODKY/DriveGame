@@ -5,6 +5,9 @@
 
 class DistantView : public Object {
 
+	static constexpr Color SKY_COLOR_TOP{ 0, 70, 255 };
+	static constexpr Color SKY_COLOR_BOTTOM{ 15, 120, 255 };
+
 public:
 	DistantView(const Texture& img_, const Camera& camera_) :
 		Object({ 0.0, 0.0, INT_MAX -1 }),
@@ -20,6 +23,9 @@ private:
 	}
 
 	void draw() const override {
+		Rect{ 0, 0, SCREEN_W, SCREEN_H / 2 }.draw(
+			Arg::top = SKY_COLOR_TOP, Arg::bottom = SKY_COLOR_BOTTOM
+		);
 		img.scaled((SCREEN_H / 2.0) / img.height()).draw(-230, ALL_OFFSET_Y);
 	}
 

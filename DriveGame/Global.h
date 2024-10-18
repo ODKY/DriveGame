@@ -36,10 +36,18 @@ extern unique_ptr<GameStateManager> gsm;
 
 // 画像
 extern unique_ptr<Texture> imgMountIwate;
-extern unique_ptr<Texture> imgBallonR;
-extern unique_ptr<Texture> imgTree01;
-extern unique_ptr<Texture> imgTree02;
-extern unique_ptr<Texture> imgGrass01;
+//extern unique_ptr<Texture> imgBallonR;
+//extern unique_ptr<Texture> imgTree01;
+//extern unique_ptr<Texture> imgTree02;
+//extern unique_ptr<Texture> imgGrass01;
+constexpr int IMG_RED_BALLON = 0;
+constexpr int IMG_YELLOW_BALLON = 1;
+constexpr int IMG_BLUE_BALLON = 2;
+constexpr int IMG_GRASS1 = 3;
+constexpr int IMG_TREE1 = 4;
+constexpr int IMG_TREE2 = 5;
+constexpr int IMG_TRAFFIC_LIGHT = 6;
+constexpr int IMG_ARROW1 = 7;
 extern unique_ptr<vector<TextureRegion>> imgRedCar;
 extern unique_ptr<vector<TextureRegion>> imgBlackCar;
 extern unique_ptr<vector<TextureRegion>> imgBlueCar;
@@ -48,6 +56,7 @@ constexpr int CAR_LEFT1 = 1;
 constexpr int CAR_LEFT2 = 2;
 constexpr int CAR_RIGHT1 = 3;
 constexpr int CAR_RIGHT2 = 4;
+extern unique_ptr<vector<TextureRegion>> imgObjects;
 
 // シェーダー
 extern unique_ptr<VertexShader> vertexShader;
@@ -84,11 +93,21 @@ inline void load_font() {
 
 inline void load_image() {
 	imgMountIwate.reset(new Texture(U"./img/mount_iwate.png"));
-	imgBallonR.reset(new Texture(U"./img/ballon01.png"));
-	imgTree01.reset(new Texture(U"./img/tree01.png"));
-	imgTree02.reset(new Texture(U"./img/tree02.png"));
-	imgGrass01.reset(new Texture(U"./img/grass01.png"));
+	//imgBallonR.reset(new Texture(U"./img/ballon01.png"));
+	//imgTree01.reset(new Texture(U"./img/tree01.png"));
+	//imgTree02.reset(new Texture(U"./img/tree02.png"));
+	//imgGrass01.reset(new Texture(U"./img/grass01.png"));
 	Texture imgAll(U"./img/DriveGame.png");
+	imgObjects.reset(new vector<TextureRegion>());
+	imgObjects->push_back(imgAll(0, 0, 64, 64));	// RedBallon
+	imgObjects->push_back(imgAll(64, 0, 64, 64));	// YellowBallon
+	imgObjects->push_back(imgAll(128, 0, 64, 64));	// BlueBallonk
+	imgObjects->push_back(imgAll(192, 0, 64, 64));	// Grass01
+	imgObjects->push_back(imgAll(0, 64, 32 * 2, 32 * 4));	// tree01
+	imgObjects->push_back(imgAll(32 * 2, 64, 32 * 4, 32 * 4));	// tree02
+	imgObjects->push_back(imgAll(0, 32 * 6, 32 * 3, 32 * 6));	// rafficLight
+	imgObjects->push_back(imgAll(32 * 3, 32 * 6, 32 * 1, 32 * 1));	// Arrow1
+
 	imgRedCar.reset(new vector<TextureRegion>());
 	imgBlackCar.reset(new vector<TextureRegion>());
 	imgBlueCar.reset(new vector<TextureRegion>());

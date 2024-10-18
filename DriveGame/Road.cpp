@@ -67,35 +67,40 @@ void Road::draw() const {
 		}.draw(SIDE_LINE_OUT_COLOR);
 
 
-		// 中央線描画
-		for (int i = 0; i < CENTER_LINE_NUM; ++i) {
+		// 分離線描画
+		for (int i = 1; i < LANE_NUM; ++i) {
+			for (int j = 0; j < LINE_NUM; ++j) {
 
-			// 線の長さを L としたときに、2L - (進行距離 % 2L) + 進行距離 - L を線のスタートとしている
-			// 最後の -L はよくわからないが無いとだめ
-			// 進行距離に足す値を徐々に減らすことで、カメラとの相対距離を減らす、つまり近づくようにしている
-			// 余りの計算は少数だとできないため、rate倍して整数化してから求めている
-			// 0で割らないよう、tmpを用意した
-			const double rate = 10000.0;
-			int32 tmp = (int32)(CENTER_LINE_LENGTH * 2 * rate);
-			if (tmp == 0)
-				tmp = 1;
-			const double remainder = (int32)(camera.get_z() * rate) % tmp / rate;
-			const double start = CENTER_LINE_LENGTH * 2 - remainder + camera.get_z() - CENTER_LINE_LENGTH;
-			const double z = start + CENTER_LINE_LENGTH * i * 2;
+				// 線の長さを L としたときに、2L - (進行距離 % 2L) + 進行距離 - L を線のスタートとしている
+				// 最後の -L はよくわからないが無いとだめ
+				// 進行距離に足す値を徐々に減らすことで、カメラとの相対距離を減らす、つまり近づくようにしている
+				// 余りの計算は少数だとできないため、rate倍して整数化してから求めている
+				// 0で割らないよう、tmpを用意した
+				const double rate = 10000.0;
+				int32 tmp = (int32)(LINE_LENGTH * 2 * rate);
+				if (tmp == 0)
+					tmp = 1;
+				const double remainder = (int32)(camera.get_z() * rate) % tmp / rate;
+				const double start = LINE_LENGTH * 2 - remainder + camera.get_z() - LINE_LENGTH;
+				const double z = start + LINE_LENGTH * j * 2;
 
-			// 中央線の頂点ワールド座標
-			const Vec3 centerNearL{ POS_X - CENTER_LINE_WIDTH / 2.0, POS_Y, z };
-			const Vec3 centerNearR{ POS_X + CENTER_LINE_WIDTH / 2.0, POS_Y, z };
-			const Vec3 centerFarL = centerNearL.movedBy(0.0, 0.0, CENTER_LINE_LENGTH);
-			const Vec3 centerFarR = centerNearR.movedBy(0.0, 0.0, CENTER_LINE_LENGTH);
+				const double leftSideX = get_left_side_x();
+				const double Lx = leftSideX + ALL_PADDING + LANE_WIDTH * i - LINE_WIDTH / 2.0;
 
-			// 中央線描画
-			Quad{
-				camera.world_pos_to_screen_pos(centerNearL) + offset,
-				camera.world_pos_to_screen_pos(centerFarL) + offset,
-				camera.world_pos_to_screen_pos(centerFarR) + offset,
-				camera.world_pos_to_screen_pos(centerNearR) + offset
-			}.draw(CENTER_LINE_COLOR);
+				// 線の頂点ワールド座標
+				const Vec3 nearL{ Lx, POS_Y, z };
+				const Vec3 nearR{ Lx + LINE_WIDTH, POS_Y, z };
+				const Vec3 farL = nearL.movedBy(0.0, 0.0, LINE_LENGTH);
+				const Vec3 farR = nearR.movedBy(0.0, 0.0, LINE_LENGTH);
+
+				// 描画
+				Quad{
+					camera.world_pos_to_screen_pos(nearL) + offset,
+					camera.world_pos_to_screen_pos(farL) + offset,
+					camera.world_pos_to_screen_pos(farR) + offset,
+					camera.world_pos_to_screen_pos(nearR) + offset
+				}.draw(CENTER_LINE_COLOR);
+			}
 		}
 
 		// 両脇（内側）の線
@@ -147,7 +152,6 @@ void Road::draw() const {
 		const ScopedCustomShader2D shader{ *vertexShader, *pixelShader };
 		renderTexture.draw(-RENDER_TEXTURE_W_QUARTER, 0);
 	}
-
 	//auto pos = camera.camera_pos_to_screen_pos({ 0, 145, 3 });
 	//Line{ pos.x, pos.y, pos.x + 1300, pos.y }.draw(Palette::Red);
 }

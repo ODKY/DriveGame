@@ -6,14 +6,14 @@
 class Obj : public Object {
 
 public:
-	Obj(const Vec3& pos_, const Texture& img_, const Camera& camera_, const double scale_ = 1.0) :
+	Obj(const Vec3& pos_, const TextureRegion& img_, const Camera& camera_, const double scale_ = 1.0) :
 		Object(pos_),
 		img(img_),
 		scale(scale_),
 		camera(camera_) {}
 
 private:
-	const Texture& img;
+	const TextureRegion& img;
 	const double scale;
 	const Camera& camera;
 
@@ -24,7 +24,8 @@ private:
 	}
 
 	void draw() const override {
-		const Vec3 posC = camera.world_pos_to_camera_pos(pos);
+		// ワールド座標は Y=0 とした上でカーブの影響を計算する
+		const Vec3 posC = camera.world_pos_to_camera_pos({ pos.x, 0, pos.z });
 		const Vec2 posS = camera.camera_pos_to_screen_pos(posC);
 		const Vec2 borderPosS = camera.camera_pos_to_screen_pos({ 0.0, -camera.get_y(), cbRoad->start1 });
 		const Vec2 border2PosS = camera.camera_pos_to_screen_pos({ 0.0, -camera.get_y(), cbRoad->start2 });
@@ -82,7 +83,7 @@ private:
 			deltaX = (curve2 * posC.z * rate2) + (deltaX1 * (1 - rate2));
 		}
 		deltaX *= RENDER_TEXTURE_W;
-		camera.draw_object(pos.movedBy(0.0, -img.height() * scale / 2.0 + ALL_OFFSET_Y, 0.0), img, scale, { deltaX, 0.0 });
+		camera.draw_object(pos.movedBy(0.0, -img.size.y * scale / 2.0 + ALL_OFFSET_Y, 0.0), img, scale, { deltaX, 0.0 });
 		
 
 		//Line(0, 245, 1000, 245).draw(Palette::Red);

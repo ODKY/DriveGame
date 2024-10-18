@@ -19,19 +19,29 @@ class Road : public Object {
 	static constexpr int32 POS_X = 0;
 	static constexpr int32 POS_Y = 0;
 
-	// サイズ
-	static constexpr int32 CENTER_LINE_WIDTH = 18;
-	static constexpr double CENTER_LINE_LENGTH = 0.7;
-	static constexpr int32 CENTER_LINE_NUM = 18;
+	// 1車線の幅
+	static constexpr int32 LANE_WIDTH = 200;
+	
+	// 通常の線のパラメータ
+	static constexpr int32 LINE_WIDTH = 10;
+	static constexpr double LINE_LENGTH = 0.7;
+	static constexpr int32 LINE_NUM = 18;
 
-	static constexpr int32 SIDE_LINE_IN_WIDTH = 23;
+	// 外側から2番目の線
+	static constexpr int32 SIDE_LINE_IN_WIDTH = 12;
 	static constexpr double SIDE_LINE_IN_LENGTH = 0.3;
-	static constexpr int32 SIDE_LINE_IN_PADDING = 30;
+	static constexpr int32 SIDE_LINE_IN_PADDING = 18;
 	static constexpr int32 SIDE_LINE_IN_NUM = 25;
 
-	static constexpr int32 SIDE_LINE_OUT_WIDTH = 15;
+	// 一番外側の線
+	static constexpr int32 SIDE_LINE_OUT_WIDTH = 10;
 
-	static constexpr int32 ROAD_WIDTH_A = 600;			// 道幅は途中で変更できるようにしたい
+	// 外側にあるやつ全体の幅
+	static constexpr int32 ALL_PADDING = SIDE_LINE_IN_WIDTH + SIDE_LINE_IN_PADDING + SIDE_LINE_OUT_WIDTH;
+
+	// 車線の数と道路全体の幅
+	static constexpr int32 LANE_NUM = 5;
+	static constexpr int32 ROAD_WIDTH = LANE_WIDTH * LANE_NUM + ALL_PADDING * 2;
 
 	static constexpr int32 FAR_Z = INT_MAX;
 
@@ -43,7 +53,7 @@ public:
 	Road(const Camera& camera_) :
 		Object({ 0.0, 0.0, INT_MAX }),
 		camera(camera_),
-		roadWidth(ROAD_WIDTH_A),
+		roadWidth(ROAD_WIDTH),
 		renderTexture(RENDER_TEXTURE_W, SCREEN_H, Palette::Black),
 		curveData(),
 		index(0) {
@@ -57,6 +67,10 @@ public:
 		return POS_X + roadWidth / 2.0;
 	}
 
+	double get_road_width() const {
+		return roadWidth;
+	}
+
 private:
 	const Camera& camera;
 	int32 roadWidth;
@@ -67,11 +81,6 @@ private:
 	bool update() override {
 
 		// シェーダーにカーブ位置と曲がり具合を送信する
-		//const Vec3 cameraToStart = camera.world_pos_to_camera_pos({ 0.0, 0.0, curveData[index][IDX_START] });
-		//cbRoad->start0 = (float)(cameraToStart.z / Camera::FAR_PLANE);
-		//const Vec3 cameraToStart1 = camera.world_pos_to_camera_pos({ 0.0, 0.0, curveData[index + 1][IDX_START] });
-		//cbRoad->start1 = (float)(cameraToStart1.z / Camera::FAR_PLANE);
-
 		cbRoad->start0 = (float)camera.world_pos_to_camera_pos({ 0.0, 0.0, curveData[index][IDX_START] }).z;
 		cbRoad->start1 = (float)camera.world_pos_to_camera_pos({ 0.0, 0.0, curveData[index + 1][IDX_START] }).z;
 		cbRoad->start2 = (float)camera.world_pos_to_camera_pos({ 0.0, 0.0, curveData[index + 2][IDX_START] }).z;
@@ -79,58 +88,7 @@ private:
 		cbRoad->curve1 = curveData.at(index + 1)[IDX_CURVE];
 		cbRoad->curve2 = curveData.at(index + 2)[IDX_CURVE];
 
-		//cbRoad->start0 = camera.world_pos_to_screen_pos({ 0.0, POS_Y, curveData[index][IDX_START] }).y;
-		//if (cbRoad->start0 > 0 && cbRoad->start0 < SCREEN_H) {
-		//	cbRoad->start0 /= SCREEN_H;						// 正規化
-		//	cbRoad->start0 = cbRoad->start0 * -1.0f + 1.0f;	// 上を正に
-		//	cbRoad->start0 *= 2.0f;								// 0～0.5の範囲になるので0～1.0に
-		//}
-		//else
-		//	cbRoad->start0 = 0.0f;
-		//cbRoad->curve0 = curveData.at(index)[IDX_CURVE];
-
-		//cbRoad->start1 = camera.world_pos_to_screen_pos({ 0.0, POS_Y, curveData[index + 1][IDX_START] }).y;
-		//if (cbRoad->start1 > 0 && cbRoad->start1 < SCREEN_H) {
-		//	cbRoad->start1 /= SCREEN_H;
-		//	cbRoad->start1 = cbRoad->start1 * -1.0f + 1.0f;
-		//	cbRoad->start1 *= 2.0f;
-		//}
-		//else
-		//	cbRoad->start1 = 0.0f;
-		//cbRoad->curve1 = curveData.at(index + 1)[IDX_CURVE];
-
-		Print << U"START0: " << cbRoad->start0;
-		Print << U"START1: " << cbRoad->start1;
-		Print << U"START2: " << cbRoad->start2;
-		Print << U"CURVE0: " << cbRoad->curve0;
-		Print << U"CURVE1: " << cbRoad->curve1;
-		Print << U"CURVE2: " << cbRoad->curve2;
-
-		//Print << U"START1_S: " << camera.world_pos_to_screen_pos({ 0.0, 0.0, curveData[index + 1][IDX_START]}).y;
-		//Print << U"START1_S - 240: " << camera.world_pos_to_screen_pos({ 0.0, 0.0, curveData[index + 1][IDX_START] }).y - 240;
-
-		double curve;
-		if (camera.get_z() < curveData.at(index + 1)[IDX_START])
-			curve = curveData.at(index)[IDX_CURVE];
-		else
-			curve = curveData.at(index + 1)[IDX_CURVE];
-		Print << U"CURVE:" << curve;
-
-		// デバッグ
-		//double borderY = camera.camera_pos_to_screen_pos({ 0.0, -camera.get_y(), cbRoad->start1 }).y;
-		//double posY = 245;
-		//double rate = ((SCREEN_H - posY) - (SCREEN_H - borderY)) / (SCREEN_H/2 - (SCREEN_H - borderY));
-		//rate = pow(rate, 2.0);
-		//Print << U"";
-		//Print << U"borderY : " << borderY;
-		//Print << U"SCREEN_H - posY : " << SCREEN_H - posY;
-		//Print << U"SCREEN_H - borderY  : " << SCREEN_H - borderY;
-		//Print << U"SCREEN_H / 2 : " << SCREEN_H / 2;
-		//Print << U"SCREEN_H - borderY  : " << SCREEN_H - borderY;
-		//Print << U"rate: " << rate;
-		//Print << U"";
-		//Line(0, posY, 1000, posY).draw(Palette::Red);
-
+		// 一定ラインを超えたらカーブ情報を更新
 		if (
 			camera.get_z() > curveData.at(index + 1)[IDX_START]
 			&& index < (int)curveData.size() - 3
@@ -138,16 +96,26 @@ private:
 			++index;
 		}
 		return true;
+
+		// 以下全部デバッグ
+		Print << U"START0: " << cbRoad->start0;
+		Print << U"START1: " << cbRoad->start1;
+		Print << U"START2: " << cbRoad->start2;
+		Print << U"CURVE0: " << cbRoad->curve0;
+		Print << U"CURVE1: " << cbRoad->curve1;
+		Print << U"CURVE2: " << cbRoad->curve2;
+
+		double curve;
+		if (camera.get_z() < curveData.at(index + 1)[IDX_START])
+			curve = curveData.at(index)[IDX_CURVE];
+		else
+			curve = curveData.at(index + 1)[IDX_CURVE];
+		Print << U"CURVE:" << curve;
 	}
 
 	void draw() const override;
 
 	void set_curve_pos() {
-		//curveData = {
-		//	{ 50.0, 80.0, 1500.0 },
-		//	{ 130.0, 230.0, -0},
-		//	//{ 130.0, 230.0, -1526.0 }
-		//};
 
 		// 前の前からの差は50以内で
 		// 50以内だと変化が近くで起こるから見えちゃう
