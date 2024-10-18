@@ -171,6 +171,9 @@
     <ClCompile Include="Global.cpp">
       <Filter>code</Filter>
     </ClCompile>
+    <ClCompile Include="GS_Drive.cpp">
+      <Filter>code</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="App\icon.ico">

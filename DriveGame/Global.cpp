@@ -12,6 +12,11 @@ unique_ptr<Font> fontDeb;
 // ゲームステートマネージャー
 unique_ptr<GameStateManager> gsm;
 
+bool isStart = false;
+double countDown = 4.4;
+bool aaa = false;
+bool isGoal = false;
+
 // 画像
 unique_ptr<Texture> imgMountIwate;
 unique_ptr<Texture> imgBallonR;

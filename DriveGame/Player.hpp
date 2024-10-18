@@ -3,6 +3,7 @@
 #include "Global.h"
 #include "Camera.hpp"
 #include "Road.h"
+//#include "GS_Drive.hpp"
 
 class Player : public Object {
 
@@ -59,7 +60,7 @@ private:
 	double time;
 
 	bool update() override {
-		time += Scene::DeltaTime();
+
 		int32 direction = 0;
 		offset = { 0.0, 0.0 };
 
@@ -67,6 +68,7 @@ private:
 		auto gamepad = Gamepad(0);
 		bool buttonA = gamepad.buttons.at(0).pressed();
 		bool buttonB = gamepad.buttons.at(2).pressed();
+		bool buttonStart = gamepad.buttons.at(7).pressed();
 		double inputX = gamepad.axes[0];
 		double inputY = gamepad.axes[1];
 		if (inputX > -0.5 && inputX < 0.5)
@@ -76,6 +78,30 @@ private:
 		//Print << U"A: " << buttonA;
 		//Print << U"B: " << buttonB;
 		//Print << U"XY: " << Vec2(inputX, inputY);
+
+		if (buttonStart) {
+			isStart = false;
+			countDown = 4.5;
+			aaa = false;
+			isGoal = false;
+			gsm->reserve_transition(*this, nullptr, true);
+			return true;
+		}
+
+		// いろいろ
+		if (!isStart && aaa)
+			return true;
+		aaa = true;
+
+		if (pos.z > 600) {
+			isGoal = true;
+		}
+
+		if (isGoal)
+			return true;
+
+		if (!isGoal)
+			time += Scene::DeltaTime();
 
 		// 速度算出
 		if (inputX > 0.5) {
@@ -173,7 +199,8 @@ private:
 		}
 
 		// カメラを自分の後ろに配置
-		camera.set_pos({ pos.x, pos.y - Camera::HEIGHT, pos.z - 0.7 });
+		if (!isGoal)
+			camera.set_pos({ pos.x, pos.y - Camera::HEIGHT, pos.z - 0.7 });
 
 		cbCamera->cameraH = -camera.get_y();
 
@@ -185,6 +212,32 @@ private:
 	}
 
 	void draw() const override {
+		// スタート
+		if (!isStart) {
+			if (KeyR.pressed())
+				isStart = true;
+			countDown -= Scene::DeltaTime();
+			if (countDown >= 3.4) {
+				//(*fontA)(U"3").drawAt(100, Scene::Center() + Point{ 3, 3 }, Palette::Black);
+				//(*fontA)(U"3").drawAt(100, Scene::Center(), Palette::Yellow);
+			}
+			else if (countDown >= 0.5) {
+				(*fontA)(U"{:.0f}"_fmt(countDown)).drawAt(100, Scene::Center() + Point{ 3, 3 }, Palette::Black);
+				(*fontA)(U"{:.0f}"_fmt(countDown)).drawAt(100, Scene::Center(), Palette::Yellow);
+			}
+			else if (countDown >= -0.5) {
+				(*fontA)(U"GO").drawAt(100, Scene::Center() + Point{ 3, 3 }, Palette::Black);
+				(*fontA)(U"GO").drawAt(100, Scene::Center(), Palette::Yellow);
+			}
+			else isStart = true;
+		}
+		if (isGoal) {
+			(*fontA)(U"GOAL").drawAt(100, Scene::Center() + Point(0, -70) + Point{3, 3}, Palette::Black);
+			(*fontA)(U"GOAL").drawAt(100, Scene::Center() + Point(0, -70), Palette::Yellow);
+			(*fontA)(U"{:.2f}s"_fmt(time)).drawAt(100, Scene::Center() + Point(0, 40) + Point{ 3, 3 }, Palette::Black);
+			(*fontA)(U"{:.2f}s"_fmt(time)).drawAt(100, Scene::Center() + Point(0, 40), Palette::Yellow);
+		}
+
 		const TextureRegion& img = imgs.at(imgIdx);
 		Print << offset;
 
@@ -196,7 +249,7 @@ private:
 		(*fontA)(U"{:0>3}Km/h"_fmt(v)).draw(vPos, Palette::Yellow);
 
 		// 走行距離出力
-		int32 d = (int32)(get_z() * 2);
+		int32 d = (int32)(get_z() * 2) - 2;
 		Point dPos{ 80, 13 };
 		Rect{ dPos.x - 15, dPos.y - 5, 125, 55 }.draw({ 0, 0, 0, 0.4 }).drawFrame(3, Palette::Black);
 		(*fontA)(U"{:0>4}m"_fmt(d)).draw(dPos + Point{ 3, 3 }, Palette::Black);
@@ -227,6 +280,7 @@ private:
 	}
 
 	int debug_control() {
+
 		// 移動
 		int direction = 0;
 		double speed = 400.0;

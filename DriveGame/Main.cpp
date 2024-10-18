@@ -19,9 +19,14 @@ void Main() {
 		Stopwatch stopwatch;
 
 		while (System::Update() && gsm) {
+			//if (!gsm) {
+			//	gsm.reset();
+			//	gsm.reset(GameStateManager::create_instance(new GS_Drive()));
+			//}
 			stopwatch.restart();
 			ClearPrint();
 			Print << U"FPS: " << (int)(1.0 / Scene::DeltaTime() + 0.5);
+			//gsm->update();
 			if (!gsm->update())
 				break;
 			Print << U"{0: >3}"_fmt(stopwatch.ms()) << U" ms";

@@ -134,6 +134,10 @@ private:
 				stage0.push_back({ { leftSideX - 200, 0, i }, TREE2 });
 				stage0.push_back({ { rightSideX + 200, 0, i }, TREE2 });
 			}
+
+			for (int j = 0; j < 18; ++j) {
+				stage0.push_back({ { leftSideX + 63 * j, 0, 600}, GOAL });
+			}
 		}
 
 		// カーブの値を調整

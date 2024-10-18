@@ -39,12 +39,13 @@ extern unique_ptr<GameStateManager> gsm;
 extern bool isHit;
 extern bool isDisplayHitBox;
 
+extern bool isStart;
+extern double countDown;
+extern bool aaa;
+extern bool isGoal;
+
 // 画像
 extern unique_ptr<Texture> imgMountIwate;
-//extern unique_ptr<Texture> imgBallonR;
-//extern unique_ptr<Texture> imgTree01;
-//extern unique_ptr<Texture> imgTree02;
-//extern unique_ptr<Texture> imgGrass01;
 
 struct ObjData {
 	int index;
@@ -52,23 +53,6 @@ struct ObjData {
 	Size boxSize;
 	Point boxOffset;
 };
-
-//constexpr int IMG_RED_BALLON = 0;
-//constexpr int IMG_YELLOW_BALLON = 1;
-//constexpr int IMG_BLUE_BALLON = 2;
-//constexpr array<int, 3> IMG_BALLONS = { IMG_RED_BALLON, IMG_YELLOW_BALLON ,IMG_BLUE_BALLON };
-//constexpr int IMG_GRASS1 = 3;
-//constexpr int IMG_TREE1 = 4;
-//constexpr int IMG_TREE2 = 5;
-//constexpr int IMG_TRAFFIC_LIGHT = 6;
-//constexpr int IMG_ARROW1 = 7;
-
-//constexpr double SCALE_BALLON = 2.0;
-//constexpr double SCALE_GRASS1 = 1.0;
-//constexpr double SCALE_TREE1 = 1.0;
-//constexpr double SCALE_TREE2 = 3.0;
-//constexpr double SCALE_TRAFFIC_LIGHT = 2.0;
-//constexpr double SCALE_ARROW1 = 3.0;
 
 constexpr ObjData RED_BALLON{ 0, 2.0, {0, 0}, {0, 0} };
 constexpr ObjData YELLOW_BALLON{ 1, 2.0, {0, 0}, {0, 0} };
@@ -81,6 +65,7 @@ constexpr ObjData TRAFFIC_LIGHT{ 6, 2.0, {3, 3}, {-58, 10} };
 constexpr ObjData ARROW_R{ 7, 5.0, {140, 3}, {0, -30} };
 constexpr ObjData GRASS2{ 8, 2.0, {0, 0}, {0, 0} };
 constexpr ObjData ARROW_L{ 9, 5.0, {140, 3}, {0, -30} };
+constexpr ObjData GOAL{ 10, 2.0, {0, 0}, {0, 0} };
 
 extern unique_ptr<vector<TextureRegion>> imgRedCar;
 extern unique_ptr<vector<TextureRegion>> imgBlackCar;
@@ -149,6 +134,7 @@ inline void load_image() {
 	imgObjects->push_back(imgAll(32 * 3, 32 * 6, 32 * 1, 32 * 1));	// ArrowR
 	imgObjects->push_back(imgAll(32 * 4, 32 * 6, 32 * 1, 32 * 1));	// Grass2
 	imgObjects->push_back(imgAll(32 * 3, 32 * 7, 32 * 1, 32 * 1));	// ArrowL
+	imgObjects->push_back(imgAll(32 * 4, 32 * 7, 32 * 1, 32 * 1));	// Goal
 
 	imgRedCar.reset(new vector<TextureRegion>());
 	imgBlackCar.reset(new vector<TextureRegion>());
