@@ -153,10 +153,11 @@ float4 ps_main(s3d::PSInput input) : SV_TARGET {
 		uv.x += (curve[2] * z * rate2) + (deltaX1 * (1.0f - rate2));
 	}
 	
-	if (z > start[1] - 0.03f && z < start[1] + 0.03f)
-		aaa = 100;
-	if (z > start[2] - 0.08f && z < start[2] + 0.08f)
-		aaa = 200;
+	// コメントを外すと、カーブの境界に色が付きます;
+	//if (z > start[1] - 0.03f && z < start[1] + 0.03f)
+	//	aaa = 100;
+	//if (z > start[2] - 0.08f && z < start[2] + 0.08f)
+	//	aaa = 200;
 
 	float4 texColor = g_texture0.Sample(g_sampler0, uv);
 	

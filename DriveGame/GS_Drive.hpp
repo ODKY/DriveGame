@@ -18,9 +18,9 @@ class GS_Drive : public GameState {
 public:
 	GS_Drive() :
 		camera({ 0.0, -145.0, 0.0 }, { SCREEN_W, SCREEN_H }),
-		player(*add_object(new Player(*imgBlackCar, camera))),
 		stageData(),
 		road(*add_object(new Road(camera, stageData.get_lane_num(STAGE_ID)))),
+		player(*add_object(new Player(*imgBlackCar, camera, road))),
 		objectData(),
 		objIdx(0),
 		otherCarGauge(0) {
@@ -56,9 +56,9 @@ public:
 
 private:
 	Camera camera;
-	Player& player;
 	StageData stageData;
 	Road& road;
+	Player& player;
 	vector<ObjectData> objectData;
 	int objIdx;
 	double otherCarGauge;

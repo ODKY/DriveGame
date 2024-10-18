@@ -50,41 +50,89 @@ private:
 			double leftSideX = -roadWidth / 2.0;
 			double rightSideX = roadWidth / 2.0;
 			curveData[0] = {
-				{ 0.0, 0 },//-18 },
-				{ 25.0, 0 },
-				{ 50.0, 14 },
-				{ 80.0, -7 },
-				{ 90.0, 16 },
-				{ 130.0, 0 },
-				{ 155.0, -18 },
-				{ 180.0, 18 },
-				{ 205.0, -18 },
-				{ 230.0, 0 },
-				{ 275.0, 20 },
-				{ 280.0, -20 },
-				{ 325.0, 0 },
+				{ 0.0, 0 },
+				{ 50.0, 7 },// 50 R
+				{ 70.0, 0 },
+				{ 120.0, -7 },// 120 L
+				{ 150.0, 0 },
+				{ 180.0, 16 },// 180 R
+				{ 200.0, -7 },// 200 L
+				{ 240 + 0.0, 0 },
+				{ 240 + 25.0, 0 },
+				{ 240 + 50.0, 14 },// 290 R
+				{ 240 + 80.0, -7 },// 320 L
+				{ 240 + 90.0, 16 },// 330 R
+				{ 240 + 130.0, 0 },
+				{ 240 + 155.0, -18 },// 240+155 L
+				{ 240 + 180.0, 18 },// 240+180 R
+				{ 240 + 205.0, -18 },// 240+205 L
+				{ 240 + 230.0, 0 },
+				{ 240 + 275.0, 20 },// 240+275 R
+				{ 240 + 280.0, -20 },// 240+280 L
+				{ 240 + 325.0, 0 },
 				{ INT_MAX - 1, 0 },
 				{ INT_MAX, 0 },
 			};
 			auto& stage0 = objectData[0];
 			//stage0.push_back({ { leftSideX + 180, 0, 3 }, TREE1 });
-			for (int i = 0; i < 25; ++i) {
+			
+			// 草とまばらな木
+			for (int i = 0; i < 1000; ++i) {
+				for (int j = 1; j < 7; ++j) {
+					stage0.push_back({ { leftSideX - 240 * j, 0, i + 0.2}, GRASS2 });
+					stage0.push_back({ { leftSideX - 410 * j, 0, i + 0.7}, GRASS2 });
+					stage0.push_back({ { rightSideX + 240 * j, 0, i + 0.0}, GRASS2 });
+					stage0.push_back({ { rightSideX +  410 * j, 0, i + 0.5}, GRASS2 });
+				}
+
+				if (i % 4 == 0) {
+					stage0.push_back({ { leftSideX - 230 * (int)(random() % 6 + 1), 0, i}, TREE2 });
+					stage0.push_back({ { rightSideX + 230 * (int)(random() % 6 + 1), 0, i}, TREE2 });
+				}
+			}
+
+			// 信号機
+			for (int i = 0; i < 1000; i += 200) {
 				stage0.push_back({ { leftSideX + 10, 0, i }, TRAFFIC_LIGHT });
-				stage0.push_back({ { leftSideX - 100, 0, i }, TREE1 });
-				stage0.push_back({ { leftSideX - 150, 0, i+0.5 }, TREE1 });
+			}
+
+			// カーブの矢印
+			for (int i = 50; i < 70; i+=3) {
+				stage0.push_back({ { leftSideX - 100, 0, i }, ARROW_R });
+			}
+			for (int i = 120; i < 150; i += 3) {
+				stage0.push_back({ { rightSideX + 100, 0, i }, ARROW_L });
+			}
+			for (int i = 180; i < 200; i += 3) {
+				stage0.push_back({ { leftSideX - 100, 0, i }, ARROW_R });
+			}
+			for (int i = 200; i < 240; i += 3) {
+				stage0.push_back({ { rightSideX + 100, 0, i }, ARROW_L });
+			}
+			for (int i = 290; i < 320; i += 3) {
+				stage0.push_back({ { leftSideX - 100, 0, i }, ARROW_R });
+			}
+			for (int i = 320; i < 330; i += 3) {
+				stage0.push_back({ { rightSideX + 100, 0, i }, ARROW_L });
+			}
+			for (int i = 330; i < 360; i += 3) {
+				stage0.push_back({ { leftSideX - 100, 0, i }, ARROW_R });
+			}
+
+			for (int i = 240; i < 265; ++i) {
+				//stage0.push_back({ { leftSideX + 10, 0, i }, TRAFFIC_LIGHT });
 				stage0.push_back({ { rightSideX + 180, 0, i }, TREE2 });
 			}
-			for (int i = 25; i < 75; ++i) {
-				stage0.push_back({ { leftSideX - 100, 0, i }, ARROW });
-				stage0.push_back({ { leftSideX - 300, 0, i+0.5 }, TREE2 });
+			for (int i = 265; i < 315; ++i) {
+				//stage0.push_back({ { leftSideX - 300, 0, i+0.5 }, TREE2 });
 				stage0.push_back({ { rightSideX + 100, 0, i }, GRASS1 });
 				int idx = random() % 3;
-				stage0.push_back({ { leftSideX + random() % (int)roadWidth, -180 - (int)(random() % 80), i }, BALLONS[idx] });
+				stage0.push_back({ { leftSideX + random() % (int)roadWidth, -230 - (int)(random() % 300), i }, BALLONS[idx] });
 				stage0.push_back({ { rightSideX + 180, 0, i }, TREE2 });
 			}
-			for (int i = 75; i < 300; ++i) {
-				stage0.push_back({ { leftSideX - 180, 0, i }, TREE2 });
-				stage0.push_back({ { rightSideX + 180, 0, i }, TREE2 });
+			for (int i = 330; i < 540; ++i) {
+				stage0.push_back({ { leftSideX - 200, 0, i }, TREE2 });
+				stage0.push_back({ { rightSideX + 200, 0, i }, TREE2 });
 			}
 		}
 

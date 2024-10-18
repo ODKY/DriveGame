@@ -78,7 +78,9 @@ constexpr ObjData GRASS1{ 3, 1.0, {0, 0}, {0, 0} };
 constexpr ObjData TREE1{ 4, 1.0, {3, 3}, {0, -7} };
 constexpr ObjData TREE2{ 5, 3.0, {20, 3}, {0, -3} };
 constexpr ObjData TRAFFIC_LIGHT{ 6, 2.0, {3, 3}, {-58, 10} };
-constexpr ObjData ARROW{ 7, 3.0, {70, 3}, {0, -30} };
+constexpr ObjData ARROW_R{ 7, 5.0, {140, 3}, {0, -30} };
+constexpr ObjData GRASS2{ 8, 2.0, {0, 0}, {0, 0} };
+constexpr ObjData ARROW_L{ 9, 5.0, {140, 3}, {0, -30} };
 
 extern unique_ptr<vector<TextureRegion>> imgRedCar;
 extern unique_ptr<vector<TextureRegion>> imgBlackCar;
@@ -144,7 +146,9 @@ inline void load_image() {
 	imgObjects->push_back(imgAll(0, 64, 32 * 2, 32 * 4));	// tree01
 	imgObjects->push_back(imgAll(32 * 2, 64, 32 * 4, 32 * 4));	// tree02
 	imgObjects->push_back(imgAll(0, 32 * 6, 32 * 3, 32 * 6));	// rafficLight
-	imgObjects->push_back(imgAll(32 * 3, 32 * 6, 32 * 1, 32 * 1));	// Arrow1
+	imgObjects->push_back(imgAll(32 * 3, 32 * 6, 32 * 1, 32 * 1));	// ArrowR
+	imgObjects->push_back(imgAll(32 * 4, 32 * 6, 32 * 1, 32 * 1));	// Grass2
+	imgObjects->push_back(imgAll(32 * 3, 32 * 7, 32 * 1, 32 * 1));	// ArrowL
 
 	imgRedCar.reset(new vector<TextureRegion>());
 	imgBlackCar.reset(new vector<TextureRegion>());

@@ -2,6 +2,7 @@
 
 #include "Global.h"
 #include "Camera.hpp"
+#include "Road.h"
 
 class Player : public Object {
 
@@ -11,23 +12,27 @@ class Player : public Object {
 	static constexpr double MAX_SPEED_Z = 0.21;
 	static constexpr double DEACC_BORDER = 0.03;
 	static constexpr double CREEP_BORDER = 0.01;
+	static constexpr double DIRT_BORDER = 0.09;
 	static constexpr double ACC = 0.045;
 	static constexpr double DEACC = -0.02;
 	static constexpr double BRAKE = -0.2;
+	static constexpr double DIRT = -0.07;
 	static constexpr double XSPEED = 300;
 
 	static constexpr Size HIT_BOX_SIZE{ 84, 35 };
 
 public:
-	Player(const vector<TextureRegion>& imgs_, Camera& camera_) :
+	Player(const vector<TextureRegion>& imgs_, Camera& camera_, const Road& road_) :
 		Object(POS),
 		imgs(imgs_),
 		scale(1.0),
 		camera(camera_),
+		road(road_),
 		imgIdx(CAR_DEFAULT),
 		offset(),
 		velocity(),
-		hitbox(HIT_BOX_SIZE) {
+		hitbox(HIT_BOX_SIZE),
+		time(0.0) {
 	}
 
 	const Vec2& get_velocity() const {
@@ -46,12 +51,15 @@ private:
 	const vector<TextureRegion>& imgs;
 	const double scale;
 	Camera& camera;
+	const Road& road;
 	int imgIdx;
 	Vec2 offset;
 	Vec2 velocity;
 	Rect hitbox;
+	double time;
 
 	bool update() override {
+		time += Scene::DeltaTime();
 		int32 direction = 0;
 		offset = { 0.0, 0.0 };
 
@@ -93,6 +101,11 @@ private:
 		if (velocity.y < CREEP_BORDER)
 			velocity.y += ACC * Scene::DeltaTime() / 10;
 
+		// ダート
+		if (pos.x + hitbox.w / 2 > road.get_right_side_x() || pos.x - hitbox.w / 2 < road.get_left_side_x())
+			if (velocity.y > DIRT_BORDER)
+				velocity.y += DIRT * Scene::DeltaTime();
+
 		// 速度調整
 		if (velocity.y > MAX_SPEED_Z)
 			velocity.y = MAX_SPEED_Z;
@@ -113,6 +126,11 @@ private:
 			--direction;
 		Print << U"PLAYER_POS : " << pos;
 		Print << U"NOW CURVE : " << curve;
+
+		if (isHit) {
+			velocity.x = 0;
+			velocity.y = 0;
+		}
 
 		// 移動
 		pos.x += velocity.x;
@@ -176,6 +194,29 @@ private:
 		Rect{ vPos.x - 15, vPos.y - 5, 160, 55 }.draw({ 0, 0, 0, 0.4}).drawFrame(3, Palette::Black);
 		(*fontA)(U"{:0>3}Km/h"_fmt(v)).draw(vPos + Point{ 3, 3 }, Palette::Black);
 		(*fontA)(U"{:0>3}Km/h"_fmt(v)).draw(vPos, Palette::Yellow);
+
+		// 走行距離出力
+		int32 d = (int32)(get_z() * 2);
+		Point dPos{ 80, 13 };
+		Rect{ dPos.x - 15, dPos.y - 5, 125, 55 }.draw({ 0, 0, 0, 0.4 }).drawFrame(3, Palette::Black);
+		(*fontA)(U"{:0>4}m"_fmt(d)).draw(dPos + Point{ 3, 3 }, Palette::Black);
+		(*fontA)(U"{:0>4}m"_fmt(d)).draw(dPos, Palette::Yellow);
+
+		// タイム出力
+		Point tPos{ 260, 13 };
+		Rect{ tPos.x - 15, tPos.y - 5, 160, 55 }.draw({ 0, 0, 0, 0.4 }).drawFrame(3, Palette::Black);
+		if (time < 10.0) {
+			(*fontA)(U"00{:0>3.2f}s"_fmt(time)).draw(tPos + Point{ 3, 3 }, Palette::Black);
+			(*fontA)(U"00{:0>3.2f}s"_fmt(time)).draw(tPos, Palette::Yellow);
+		}
+		else if (time < 100.0) {
+			(*fontA)(U"0{:0>3.2f}s"_fmt(time)).draw(tPos + Point{ 3, 3 }, Palette::Black);
+			(*fontA)(U"0{:0>3.2f}s"_fmt(time)).draw(tPos, Palette::Yellow);
+		}
+		else {
+			(*fontA)(U"{:0>3.2f}s"_fmt(time)).draw(tPos + Point{ 3, 3 }, Palette::Black);
+			(*fontA)(U"{:0>3.2f}s"_fmt(time)).draw(tPos, Palette::Yellow);
+		}
 
 		// 車描画
 		camera.draw_object(pos.movedBy(offset.x, -IMG_SIZE.y * scale / 2.0 + ALL_OFFSET_Y, 0.0), img, scale);

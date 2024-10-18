@@ -31,8 +31,10 @@ private:
 		hitbox.pos = { (int32)posS.x - hitbox.w / 2 + deltaX + boxOffset.x, (int32)posS.y + boxOffset.y };
 
 		// 当たり判定
-		if (hitbox.intersects(player.get_hit_box()))
+		if (hitbox.w != 0 && hitbox.intersects(player.get_hit_box())) {
 			isHit = true;
+			return false;
+		}
 
 		if (pos.z < camera.get_z())
 			return false;
