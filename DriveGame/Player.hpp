@@ -3,7 +3,7 @@
 #include "Global.h"
 #include "Camera.hpp"
 #include "Road.h"
-//#include "GS_Drive.hpp"
+#include "GS_Drive.hpp"
 
 class Player : public Object {
 
@@ -84,7 +84,8 @@ private:
 			countDown = 4.5;
 			aaa = false;
 			isGoal = false;
-			gsm->reserve_transition(*this, nullptr, true);
+			curveAmount = 0;
+			gsm->reserve_transition(*this, new GS_Drive(), true);
 			return true;
 		}
 
@@ -150,8 +151,10 @@ private:
 			++direction;
 		else if (curve < -0.01)
 			--direction;
-		Print << U"PLAYER_POS : " << pos;
-		Print << U"NOW CURVE : " << curve;
+		if (isDisplayHitBox) {
+			Print << U"PLAYER_POS : " << pos;
+			Print << U"NOW CURVE : " << curve;
+		}
 
 		if (isHit) {
 			velocity.x = 0;
@@ -166,9 +169,11 @@ private:
 		// カーブの膨らみ
 		pos.x += velocity.y * 130000 * -curve * Scene::DeltaTime();
 
-		Print << U"velocity : " << velocity;
+		if (isDisplayHitBox)
+			Print << U"velocity : " << velocity;
 		int32 v = (int32)(velocity.y * 1000);
-		Print << U"速度 : " << v << U"Km/h";
+		if (isDisplayHitBox)
+			Print << U"速度 : " << v << U"Km/h";
 		velocity.x = 0;
 
 		direction += debug_control();
@@ -232,14 +237,15 @@ private:
 			else isStart = true;
 		}
 		if (isGoal) {
-			(*fontA)(U"GOAL").drawAt(100, Scene::Center() + Point(0, -70) + Point{3, 3}, Palette::Black);
-			(*fontA)(U"GOAL").drawAt(100, Scene::Center() + Point(0, -70), Palette::Yellow);
-			(*fontA)(U"{:.2f}s"_fmt(time)).drawAt(100, Scene::Center() + Point(0, 40) + Point{ 3, 3 }, Palette::Black);
-			(*fontA)(U"{:.2f}s"_fmt(time)).drawAt(100, Scene::Center() + Point(0, 40), Palette::Yellow);
+			(*fontA)(U"GOAL").drawAt(100, Scene::Center() + Point(0, -120) + Point{3, 3}, Palette::Black);
+			(*fontA)(U"GOAL").drawAt(100, Scene::Center() + Point(0, -120), Palette::Yellow);
+			(*fontA)(U"{:.2f}s"_fmt(time)).drawAt(100, Scene::Center() + Point(0, -10) + Point{ 3, 3 }, Palette::Black);
+			(*fontA)(U"{:.2f}s"_fmt(time)).drawAt(100, Scene::Center() + Point(0, -10), Palette::Yellow);
+			(*fontA)(U"press start").drawAt(50, Scene::Center() + Point(0, +70) + Point{ 3, 3 }, Palette::Black);
+			(*fontA)(U"press start").drawAt(50, Scene::Center() + Point(0, +70), Palette::Yellow);
 		}
 
 		const TextureRegion& img = imgs.at(imgIdx);
-		Print << offset;
 
 		// 速度出力
 		int32 v = (int32)(velocity.y * 1000);

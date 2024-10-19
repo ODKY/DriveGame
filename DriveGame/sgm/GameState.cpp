@@ -105,8 +105,8 @@ void GameState::trigger_update() {
 	//	if (obj->isSorted)
 	//		obj->draw();
 
-	Print << U"objects num 0 : " << objects->size();
-	Print << U"objects num 1 : " << objectsDraw->size();
+	//Print << U"objects num 0 : " << objects->size();
+	//Print << U"objects num 1 : " << objectsDraw->size();
 	if (objects->size() != objectsDraw->size()) {
 		Print << U"ERROR";
 	}

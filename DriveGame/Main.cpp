@@ -25,11 +25,11 @@ void Main() {
 			//}
 			stopwatch.restart();
 			ClearPrint();
-			Print << U"FPS: " << (int)(1.0 / Scene::DeltaTime() + 0.5);
+			//Print << U"FPS: " << (int)(1.0 / Scene::DeltaTime() + 0.5);
 			//gsm->update();
 			if (!gsm->update())
 				break;
-			Print << U"{0: >3}"_fmt(stopwatch.ms()) << U" ms";
+			//Print << U"{0: >3}"_fmt(stopwatch.ms()) << U" ms";
 		}
 		return;
 	}

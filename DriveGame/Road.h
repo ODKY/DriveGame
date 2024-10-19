@@ -127,7 +127,8 @@ private:
 		//Print << U"CURVE: " << curve;
 		//Print << U"CURVE: " << camera.get_cameras_curve();
 
-		Print << U"CurveAmount : " << curveAmount;
+		if (isDisplayHitBox)
+			Print << U"CurveAmount : " << curveAmount;
 
 		return true;
 	}
