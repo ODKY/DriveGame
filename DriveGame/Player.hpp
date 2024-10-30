@@ -10,7 +10,7 @@ class Player : public Object {
 	static constexpr Vec3 POS{ 0.0 , 0.0, 1.0 };
 	static constexpr Size IMG_SIZE{ 96, 96 };
 
-	static constexpr double MAX_SPEED_Z = 0.21;
+	static constexpr double MAX_SPEED_Z = 0.255;
 	static constexpr double DEACC_BORDER = 0.03;
 	static constexpr double CREEP_BORDER = 0.01;
 	static constexpr double DIRT_BORDER = 0.09;
@@ -64,21 +64,44 @@ private:
 		int32 direction = 0;
 		offset = { 0.0, 0.0 };
 
-		// 入力を取得
-		auto gamepad = Gamepad(0);
-		bool buttonA = gamepad.buttons.at(0).pressed();
-		bool buttonB = gamepad.buttons.at(2).pressed();
-		bool buttonStart = gamepad.buttons.at(7).pressed();
-		double inputX = gamepad.axes[0];
-		double inputY = gamepad.axes[1];
-		if (inputX > -0.5 && inputX < 0.5)
-			inputX = 0;
-		if (inputY > -0.5 && inputY < 0.5)
-			inputY = 0;
-		//Print << U"A: " << buttonA;
-		//Print << U"B: " << buttonB;
-		//Print << U"XY: " << Vec2(inputX, inputY);
+		// 入力
+		bool buttonA = false;
+		bool buttonB = false;
+		bool buttonStart = false;
+		double inputX = 0.0;
+		double inputY = 0.0;
 
+		// コントローラーの入力を取得
+		if (const auto gamepad = Gamepad(0)) {
+			buttonA = gamepad.buttons.at(0).pressed();
+			buttonB = gamepad.buttons.at(2).pressed();
+			buttonStart = gamepad.buttons.at(7).pressed();
+			inputX = gamepad.axes[0];
+			inputY = gamepad.axes[1];
+			if (inputX > -0.5 && inputX < 0.5)
+				inputX = 0;
+			if (inputY > -0.5 && inputY < 0.5)
+				inputY = 0;
+			//Print << U"A: " << buttonA;
+			//Print << U"B: " << buttonB;
+			//Print << U"XY: " << Vec2(inputX, inputY);
+			for (int i = 0; i < 10; ++i) {
+				const auto& button = gamepad.buttons.at(i);
+				Print << i << U" : " << button.pressed();
+			}
+			Print << gamepad.buttons.size();
+		}
+
+		// キーボードの入力を取得
+		buttonA = KeyUp.pressed();
+		buttonB = KeyDown.pressed();
+		buttonStart = KeyEnter.down();
+		if (KeyRight.pressed())
+			inputX = 1.0;
+		else if (KeyLeft.pressed())
+			inputX = -1.0;
+
+		// リスタート
 		if (buttonStart) {
 			isStart = false;
 			countDown = 4.5;
@@ -147,9 +170,9 @@ private:
 		else
 			curve = cbRoad->curve1;
 
-		if (curve > 0.01)
+		if (curve > 0.000001)
 			++direction;
-		else if (curve < -0.01)
+		else if (curve < -0.000001)
 			--direction;
 		if (isDisplayHitBox) {
 			Print << U"PLAYER_POS : " << pos;
@@ -290,15 +313,15 @@ private:
 		// 移動
 		int direction = 0;
 		double speed = 400.0;
-		if (KeyUp.pressed())
+		if (KeyI.pressed())
 			pos.y += (-speed * 3 * Scene::DeltaTime());
-		if (KeyRight.pressed()) {
+		if (KeyL.pressed()) {
 			pos.x += (speed * Scene::DeltaTime());
 			++direction;
 		}
-		if (KeyDown.pressed())
+		if (KeyK.pressed())
 			pos.y += (speed * 3 * Scene::DeltaTime());
-		if (KeyLeft.pressed()) {
+		if (KeyJ.pressed()) {
 			pos.x += (-speed * Scene::DeltaTime());
 			--direction;
 		}

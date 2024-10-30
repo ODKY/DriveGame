@@ -7,6 +7,10 @@
 using namespace SGM2;
 using namespace SGM2::Plus;
 
+// GLSLを使うかどうか（使わない場合はHLSL）
+constexpr bool USE_GLSL = true;
+SIV3D_SET(EngineOption::Renderer::OpenGL);
+
 // サイズ
 constexpr int32 SCREEN_W = 640;
 constexpr int32 SCREEN_H = 480;
@@ -157,8 +161,19 @@ inline void load_image() {
 }
 
 inline bool load_shader() {
-	vertexShader.reset(new VertexShader(HLSL{ U"./shader/road.hlsl", U"vs_main" }));
-	pixelShader.reset(new PixelShader(HLSL{ U"./shader/road.hlsl", U"ps_main" }));
+	if (!USE_GLSL) {
+		vertexShader.reset(new VertexShader(HLSL{ U"./shader/road.hlsl", U"vs_main" }));
+		pixelShader.reset(new PixelShader(HLSL{ U"./shader/road.hlsl", U"ps_main" }));
+	}
+	else {
+		vertexShader.reset(new VertexShader(GLSL{ U"./shader/road.vert", {{U"VSConstants2D", 0}} }));
+		pixelShader.reset(new PixelShader(GLSL{ U"./shader/road.frag",{
+			{U"PSConstants2D", 0},
+			{U"TimeStruct", 1},
+			{U"RoadData", 2},
+			{U"CameraData", 3}
+		}}));
+	}
 
 	if (*vertexShader && *pixelShader)
 		return true;
