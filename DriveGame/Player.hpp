@@ -71,8 +71,8 @@ private:
 		double inputX = 0.0;
 		double inputY = 0.0;
 
-		// コントローラーの入力を取得
 		if (const auto gamepad = Gamepad(0)) {
+			// コントローラーの入力を取得
 			buttonA = gamepad.buttons.at(0).pressed();
 			buttonB = gamepad.buttons.at(2).pressed();
 			buttonStart = gamepad.buttons.at(7).pressed();
@@ -82,24 +82,17 @@ private:
 				inputX = 0;
 			if (inputY > -0.5 && inputY < 0.5)
 				inputY = 0;
-			//Print << U"A: " << buttonA;
-			//Print << U"B: " << buttonB;
-			//Print << U"XY: " << Vec2(inputX, inputY);
-			for (int i = 0; i < 10; ++i) {
-				const auto& button = gamepad.buttons.at(i);
-				Print << i << U" : " << button.pressed();
-			}
-			Print << gamepad.buttons.size();
 		}
-
-		// キーボードの入力を取得
-		buttonA = KeyUp.pressed();
-		buttonB = KeyDown.pressed();
-		buttonStart = KeyEnter.down();
-		if (KeyRight.pressed())
-			inputX = 1.0;
-		else if (KeyLeft.pressed())
-			inputX = -1.0;
+		else {
+			// キーボードの入力を取得
+			buttonA = KeyUp.pressed();
+			buttonB = KeyDown.pressed();
+			buttonStart = KeyEnter.down();
+			if (KeyRight.pressed())
+				inputX = 1.0;
+			else if (KeyLeft.pressed())
+				inputX = -1.0;
+		}
 
 		// リスタート
 		if (buttonStart) {
