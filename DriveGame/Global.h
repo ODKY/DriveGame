@@ -8,8 +8,8 @@ using namespace SGM2;
 using namespace SGM2::Plus;
 
 // GLSLを使うかどうか（使わない場合はHLSL）
-constexpr bool USE_GLSL = true;
-SIV3D_SET(EngineOption::Renderer::OpenGL);
+constexpr bool USE_GLSL = false;
+//SIV3D_SET(EngineOption::Renderer::OpenGL);
 
 // サイズ
 constexpr int32 SCREEN_W = 640;

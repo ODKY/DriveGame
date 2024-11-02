@@ -359,6 +359,7 @@
     <ClInclude Include="sgm\std.h" />
     <ClInclude Include="StageData.hpp" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TextPanel.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App\example\obj\blacksmith.obj">

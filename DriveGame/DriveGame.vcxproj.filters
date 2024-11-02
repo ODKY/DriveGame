@@ -801,6 +801,8 @@
     <None Include="App\engine\shader\glsl\quad_warp.frag">
       <Filter>Resource Files\engine\shader\glsl</Filter>
     </None>
+    <None Include="App\shader\road.frag" />
+    <None Include="App\shader\road.vert" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="App\example\test.mp3">
@@ -900,6 +902,9 @@
       <Filter>code</Filter>
     </ClInclude>
     <ClInclude Include="OtherCar.hpp">
+      <Filter>code</Filter>
+    </ClInclude>
+    <ClInclude Include="TextPanel.hpp">
       <Filter>code</Filter>
     </ClInclude>
   </ItemGroup>
